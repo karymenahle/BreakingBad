@@ -81,6 +81,16 @@ public Game(String title, int width, int height) {
     brick = new LinkedList<Brick>();
 }
 
+    private int getDirection() {
+        return direction;
+    }
+
+    private void setDirection(int i) {
+       this.direction=i;
+    }
+
+
+
 public int getWidth(){
 return width;
 }
@@ -96,8 +106,13 @@ Assets.init();
 //Se pone la barra que es el jugador 
 player = new Player(0, getHeight()-100, 1, 120, 100, this);
 
-ball = new Ball(100, 100, 1, 40, 40, this);
-
+int iPosX;
+         int iNum = (int) (Math.random() * 5) + 10;
+         for (int i = 1; i<= iNum; i++){
+             iPosX = (int) (Math.random() * getWidth()-100);
+             
+ball = new Ball(iPosX, 100, 1, 40, 40, this);
+         }
 
 display.getJframe().addKeyListener(keyManager);
 
@@ -110,14 +125,22 @@ public KeyManager getKeyManager() {
 
 private void tick() {
     keyManager.tick();
-    //advancinf player with colition
+    //advancing player with colition
    player.tick();
    ball.tick();
+   
+   
    if (player.intersecta(ball)){
-              
-             }
+       if(ball.getDirection() == 3){
+       ball.setDirection(1);
+       }
+       
+       else if (ball.getDirection() == 4){
+       ball.setDirection(2);
+       }
    
     }
+}
 
 private void render() {
 // get the buffer strategy from the display
@@ -163,6 +186,5 @@ catch (InterruptedException ie) {
 ie.printStackTrace(); 
    }
  } 
-}
+}}
 
-}
