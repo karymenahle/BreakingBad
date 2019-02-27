@@ -104,7 +104,7 @@ display = new Display(title, getWidth(), getHeight());
 Assets.init(); 
 
 //Se pone la barra que es el jugador 
-player = new Player(350, getHeight()-100, 1, 130, 100, this);
+player = new Player(350, getHeight()-100, 1, 150, 60, this);
 
 //Se crea esta variable que hace que la posicion en x de la pelota sea random
     int iPosX;
