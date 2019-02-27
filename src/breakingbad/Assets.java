@@ -22,8 +22,8 @@ public class Assets {
 /**
 * initializing the images of the game */
 public static void init() {
-background = ImageLoader.loadImage("/images/fondo.jpg");
-player = ImageLoader.loadImage("/images/barra.png"); 
+background = ImageLoader.loadImage("/images/breaking_bad_logo.png");
+player = ImageLoader.loadImage("/images/van.png"); 
 brick = ImageLoader.loadImage("/images/brick.png"); 
 ball = ImageLoader.loadImage("/images/ball.png"); 
 
