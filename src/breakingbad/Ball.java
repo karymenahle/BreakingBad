@@ -74,48 +74,57 @@ public class Ball extends Item{
     @Override
     public void tick() {
         
+        
+        //Este if sirve para asignar que la direccion 1 va en diagonal hacia arriba y la derecha
        if (getDirection() == 1){
        setX(getX() + getSpeed());
        setY(getY() - getSpeed());
        }
        
+       //Este if sirve para asignar que la direccion 2 va en diagonal hacia arriba y la izquierda
        if (getDirection() == 2){
        setX(getX() - getSpeed());
        setY(getY() - getSpeed());
        }
        
+       //Este if sirve para asignar que la direccion 3 va hacia abajo y la derecha
        if (getDirection() == 3){
        setX(getX() + getSpeed());
        setY(getY() + getSpeed());
        }
        
+       //Este if sirve para asignar que la direccion 4 va en diagonal hacia abajo y a la izquierda
        if (getDirection() == 4){
        setX(getX() - getSpeed());
        setY(getY() + getSpeed());
        }
      
 
-       
+       //sirve para saber si choca con una pared y tiene direccion 1 se cambie a 2
        if(getX()+50 >= game.getWidth() && getDirection() == 1){
        setDirection(2);
        }
        
+       //sirve para saber si choca con una pared y tiene direccion 2 se cambie a 1
        else if(getX() <= 0  && getDirection() == 2){
        setDirection(1);
        }
        
+       //sirve para saber si choca con una pared y tiene direccion 3 se cambie a 4
        else if(getX()+50 >= game.getWidth() && getDirection() == 3){
        setDirection(4);
        }
        
-       else if(getX() >= 0 && getDirection() == 4){
+       //sirve para saber si choca con una pared y tiene direccion 4 se cambie a 3
+       else if(getX() <= 0 && getDirection() == 4){
        setDirection(3);
        }
        
+       //sirve para saber si choca con el techo y tiene direccion 1 se cambie a 3
        if(getY() <= 0 && getDirection() == 1){
        setDirection(3);
        }
-       
+       //sirve para saber si choca con el techi y tiene direccion 2 se cambie a 4
        else if (getY() <= 0 && getDirection() == 2){
        setDirection(4);
        }
