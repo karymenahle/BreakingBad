@@ -1,0 +1,133 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package breakingbad;
+
+/**
+ *
+ * @author karymenahleacosta
+ */
+import java.awt.Graphics;
+import java.awt.Rectangle;
+
+/**
+ *
+ * @author karymenahleacosta
+ */
+public class Ball extends Item{
+
+    private int width;
+    private int height;
+    private Game game;
+    private int speed;
+    private int direction;
+    
+
+    
+    public Ball(int x, int y, int direction, int width, int height, Game game) {
+        super(x, y);
+        this.width = width;
+        this.height = height;
+        this.game = game;
+        this.direction = 1;
+        this.speed = 3;
+   
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    
+    public int getDirection() {
+        return direction;
+    }
+
+    
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+    
+    public void setDirection(int direction) {
+       this.direction = direction;
+    }
+
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    @Override
+    public void tick() {
+        
+       if (getDirection() == 1){
+       setX(getX() + getSpeed());
+       setY(getY() - getSpeed());
+       }
+       
+       if (getDirection() == 2){
+       setX(getX() - getSpeed());
+       setY(getY() - getSpeed());
+       }
+       
+       if (getDirection() == 3){
+       setX(getX() + getSpeed());
+       setY(getY() + getSpeed());
+       }
+       
+       if (getDirection() == 4){
+       setX(getX() - getSpeed());
+       setY(getY() + getSpeed());
+       }
+     
+
+       
+       if(getX()+50 >= game.getWidth() && getDirection() == 1){
+       setDirection(2);
+       }
+       
+       else if(getX() <= 0  && getDirection() == 2){
+       setDirection(1);
+       }
+       
+       else if(getX()+50 >= game.getWidth() && getDirection() == 3){
+       setDirection(4);
+       }
+       
+       else if(getX() >= 0 && getDirection() == 4){
+       setDirection(3);
+       }
+       
+       if(getY() <= 0 && getDirection() == 1){
+       setDirection(3);
+       }
+       
+       else if (getY() <= 0 && getDirection() == 2){
+       setDirection(4);
+       }
+        
+    }
+    
+            public Rectangle getPerimetro() {
+         return new Rectangle(getX(), getY(), getWidth(), getHeight());
+        }
+            
+    @Override
+    public void render(Graphics g) {
+        g.drawImage(Assets.ball, getX(), getY(), getWidth(), getHeight(), null);
+    }
+}
