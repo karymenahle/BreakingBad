@@ -92,13 +92,19 @@ private int speed;
     
       
        public Rectangle getPerimetro() {
-         return new Rectangle(getX(), getY()+34, getWidth(), getHeight());
+         return new Rectangle(getX(), getY()+34, 60, getHeight());
+        }
+       
+       public Rectangle getPerimetro2() {
+         return new Rectangle(getX()+61, getY()+34, 60, getHeight());
         }
        
        public boolean intersecta(Ball obj){
             return obj instanceof Ball  && getPerimetro().intersects(((Ball) obj).getPerimetro());
             }
-       
+       public boolean intersecta2(Ball obj){
+        return obj instanceof Ball  && getPerimetro2().intersects(((Ball) obj).getPerimetro());
+            }
        
     //To paint the item
      @Override 

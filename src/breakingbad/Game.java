@@ -104,13 +104,14 @@ display = new Display(title, getWidth(), getHeight());
 Assets.init(); 
 
 //Se pone la barra que es el jugador 
-player = new Player(0, getHeight()-100, 1, 120, 100, this);
+player = new Player(350, getHeight()-100, 1, 130, 100, this);
 
-int iPosX;
-         int iNum = (int) (Math.random() * 5) + 10;
-         for (int i = 1; i<= iNum; i++){
-             iPosX = (int) (Math.random() * getWidth()-100);
-             
+//Se crea esta variable que hace que la posicion en x de la pelota sea random
+    int iPosX;
+    int iNum = (int) (Math.random() * 5) + 10;
+    for (int i = 1; i<= iNum; i++){
+    iPosX = (int) (Math.random() * getWidth()-100);
+//Se inicializa la pelota con random x, en la mitad de la pantalla para que le de tiempo al jugador de moverse             
 ball = new Ball(iPosX, 100, 1, 40, 40, this);
          }
 
@@ -131,14 +132,11 @@ private void tick() {
    
    
    if (player.intersecta(ball)){
-       if(ball.getDirection() == 3){
-       ball.setDirection(1);
-       }
-       
-       else if (ball.getDirection() == 4){
        ball.setDirection(2);
-       }
+    }
    
+      if (player.intersecta2(ball)){
+       ball.setDirection(1);
     }
 }
 
