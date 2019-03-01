@@ -92,11 +92,11 @@ private int speed;
     
       
        public Rectangle getPerimetro() {
-         return new Rectangle(getX(), getY()+34, 60, getHeight());
+         return new Rectangle(getX(), getY(), 60, getHeight());
         }
        
        public Rectangle getPerimetro2() {
-         return new Rectangle(getX()+61, getY()+34, 60, getHeight());
+         return new Rectangle(getX()+61, getY(), 60, getHeight());
         }
        
        public boolean intersecta(Ball obj){
