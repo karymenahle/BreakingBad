@@ -75,6 +75,8 @@ public class Ball extends Item{
     public void tick() {
         
         
+        if(game.isStart()){
+        
         //Este if sirve para asignar que la direccion 1 va en diagonal hacia arriba y la derecha
        if (getDirection() == 1){
        setX(getX() + getSpeed());
@@ -129,6 +131,7 @@ public class Ball extends Item{
        setDirection(4);
        }
         
+    }
     }
     
             public Rectangle getPerimetro() {

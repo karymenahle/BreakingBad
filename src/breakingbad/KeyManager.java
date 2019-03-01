@@ -16,6 +16,7 @@ public class KeyManager implements KeyListener {
     public boolean down; // para mover hacia abajo
     public boolean left; // para mover hacia la izquierda
     public boolean right; // para mover a la derecha
+    public boolean space; //Para ver si esta oprimida la tecla space
     
     private boolean keys[]; //para guardar los movimientos
     
@@ -41,12 +42,14 @@ public class KeyManager implements KeyListener {
     }
     
     public void tick(){
+        
        
        // to enable o disable every key 
     up = keys[KeyEvent.VK_UP];
     down = keys[KeyEvent.VK_DOWN];
     left = keys[KeyEvent.VK_LEFT];
     right = keys[KeyEvent.VK_RIGHT];
+    space = keys[KeyEvent.VK_SPACE];
     }
     
 }

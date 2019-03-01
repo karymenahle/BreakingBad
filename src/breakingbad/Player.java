@@ -68,6 +68,8 @@ private int speed;
     @Override 
       public void tick(){
 
+          
+          if (game.isStart()){
         //Solo se mueve a la derecha o a la izquierda 
         
           if(game.getKeyManager().left){
@@ -87,16 +89,16 @@ private int speed;
       else if (getX() <= 0){
        setX(0); 
         }
-          
+          }
       }
     
       
        public Rectangle getPerimetro() {
-         return new Rectangle(getX(), getY()+34, 60, getHeight());
+         return new Rectangle(getX(), getY(), 60, getHeight());
         }
        
        public Rectangle getPerimetro2() {
-         return new Rectangle(getX()+61, getY()+34, 60, getHeight());
+         return new Rectangle(getX()+61, getY(), 60, getHeight());
         }
        
        public boolean intersecta(Ball obj){

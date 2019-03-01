@@ -31,6 +31,8 @@ private Player player; // to use a player
 
 private Ball ball; //To use the ball
 
+private boolean start;//para hacer que el juego comience
+
 private LinkedList<Brick> brick;
 
 private KeyManager keyManager; //to manage the keyboard
@@ -76,6 +78,7 @@ public Game(String title, int width, int height) {
     this.height = height;
     running = false; 
     keyManager = new KeyManager();
+    this.start=false;//inicializo el juego como false que todavia no inicia
     
     //
     brick = new LinkedList<Brick>();
@@ -99,6 +102,16 @@ public int getHeight(){
 return height;
 }
 
+    public boolean isStart() {
+        return start;
+    }
+
+    public void setStart(boolean start) {
+        this.start = start;
+    }
+
+
+
 private void init() {
 display = new Display(title, getWidth(), getHeight());
 Assets.init(); 
@@ -106,14 +119,10 @@ Assets.init();
 //Se pone la barra que es el jugador 
 player = new Player(350, getHeight()-100, 1, 150, 60, this);
 
-//Se crea esta variable que hace que la posicion en x de la pelota sea random
-    int iPosX;
-    int iNum = (int) (Math.random() * 5) + 10;
-    for (int i = 1; i<= iNum; i++){
-    iPosX = (int) (Math.random() * getWidth()-100);
-//Se inicializa la pelota con random x, en la mitad de la pantalla para que le de tiempo al jugador de moverse             
-ball = new Ball(iPosX, 100, 1, 40, 40, this);
-         }
+
+//Se inicializa la pelota a mitad de la barra            
+ball = new Ball(400, getHeight()-130, 1, 40, 40, this);
+         
 
 display.getJframe().addKeyListener(keyManager);
 
@@ -127,7 +136,12 @@ public KeyManager getKeyManager() {
 private void tick() {
     keyManager.tick();
     //advancing player with colition
-   player.tick();
+   
+   if (getKeyManager().space) {
+   setStart(true);
+   }
+   
+   player.tick(); 
    ball.tick();
    
    
@@ -139,6 +153,7 @@ private void tick() {
        ball.setDirection(1);
     }
 }
+   
 
 private void render() {
 // get the buffer strategy from the display
@@ -167,12 +182,14 @@ g.dispose();
 }
 
 public synchronized void start() { 
+
     if (!running) {
 running = true;
 thread = new Thread(this); 
 thread.start();
  }
 }
+
 
 public synchronized void stop() { 
 if (running) {
