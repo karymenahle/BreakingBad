@@ -23,7 +23,7 @@ public class Ball extends Item{
     private Game game;
     private int speed;
     private int direction;
-    
+    private Animation skull;
 
     
     public Ball(int x, int y, int direction, int width, int height, Game game) {
@@ -34,6 +34,7 @@ public class Ball extends Item{
         this.direction = 1;
         this.speed = 3;
    
+        this.skull = new Animation(Assets.BallImages, 100);
     }
 
     public int getSpeed() {
@@ -73,7 +74,7 @@ public class Ball extends Item{
 
     @Override
     public void tick() {
-        
+        this.skull.tick();
         
         //Este if sirve para asignar que la direccion 1 va en diagonal hacia arriba y la derecha
        if (getDirection() == 1){
@@ -140,6 +141,6 @@ public class Ball extends Item{
             
     @Override
     public void render(Graphics g) {
-        g.drawImage(Assets.ball, getX(), getY(), getWidth(), getHeight(), null);
+        g.drawImage(skull.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);
     }
 }

@@ -8,6 +8,7 @@ package breakingbad;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.Stack;
 
 /**
  *
@@ -20,7 +21,7 @@ public class Brick extends Item{
     private Game game;
 
     private int index;
-    public Animation Meth;
+    private Animation Meth;
     
     public Brick(int x, int y, int width, int height, Game game) {
         super(x, y);
@@ -65,20 +66,11 @@ public class Brick extends Item{
     public void tick() {
         this.Meth.tick();
 
-        // reset x position and y position if colision
-//        if (getX() + 60 >= game.getWidth()) {
-//            setX(game.getWidth() - 60);
-//        }
-//        else 
         if (getX() <= -30) {
             setX(-30);
         }
-//        if (getY() + 80 >= game.getHeight()) {
-//            setY(game.getHeight() - 80);
-//        }
-        else if (getY() <= -20) {
-            setY(-20);
-        }
+
+
     }
     
     public void setIndex(int index){
@@ -95,9 +87,15 @@ public class Brick extends Item{
 
 public void nextBrick(){
        upgradeIndex();
+       if(getIndex()>=4){
+           setY(-1000);
+       }
+       
        Meth.setStaticIndex(index);
        Meth.getBlockFrame();
+
     }
+
     public Rectangle getPerimetro() {
 
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
@@ -106,7 +104,7 @@ public void nextBrick(){
     @Override
     public void render(Graphics g) {
         
-        g.drawImage(Meth.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);   
+        g.drawImage(Meth.getBlockFrame(), getX(), getY(), getWidth(), getHeight(), null);   
         
 
     }//Meth.getCurrentFrame()

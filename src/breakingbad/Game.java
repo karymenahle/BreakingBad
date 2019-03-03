@@ -39,19 +39,21 @@ private KeyManager keyManager; //to manage the keyboard
         this.height = height;
         running = false; 
         keyManager = new KeyManager();
-        //
-        bricks = new LinkedList<Brick>();
+        bricks = new LinkedList<Brick>();   
     }
 
     private int getDirection() {
         return direction;
     }
+    
     private void setDirection(int i) {
        this.direction=i;
     }
+    
     public int getWidth(){
     return width;
     }
+    
     public int getHeight(){
     return height;
     }
@@ -59,7 +61,7 @@ private KeyManager keyManager; //to manage the keyboard
     private void init() {
         display = new Display(title, getWidth(), getHeight());
         Assets.init(); 
-
+        
         //Se pone la barra que es el jugador 
         player = new Player(350, getHeight()-75, 1, 150, 60, this);
 
@@ -70,7 +72,7 @@ private KeyManager keyManager; //to manage the keyboard
             iPosX = (int) (Math.random() * getWidth()-100);
             //Se inicializa la pelota con random x,
             //en la mitad de la pantalla para que le de tiempo al jugador de moverse             
-            ball = new Ball(iPosX, 100, 1, 20, 20, this);
+            ball = new Ball(iPosX, 250, 1, 40, 40, this);
         }
 
 
@@ -119,7 +121,7 @@ private KeyManager keyManager; //to manage the keyboard
 
     private void tick() {
         keyManager.tick();
-
+        
         //advancing player with colition
        player.tick();
        ball.tick();
@@ -133,13 +135,16 @@ private KeyManager keyManager; //to manage the keyboard
           if (player.intersecta2(ball)){
            ball.setDirection(1);
         }
+          
+          
           //hacemos ticks en los ladrillos
         for (int i = 0; i < bricks.size(); i++) {
           Brick ladrillo =  bricks.get(i);
           ladrillo.tick();
           if(ball.intersecta(ladrillo)){
-            ladrillo.Meth.isNxtBlock(true);
+            ladrillo.nextBrick();
             ball.setDirection(4);
+            
         }
         }
         
