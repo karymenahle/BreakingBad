@@ -131,9 +131,29 @@ public class Ball extends Item{
        }
         
     }
-           public boolean intersecta(Brick obj){
-            return obj instanceof Brick  && getPerimetro().intersects(((Brick) obj).getPerimetro());
-            }
+    
+    public void oppositeDirection(){
+              //sirve para saber si choca con una pared y tiene direccion 4 se cambie a 3
+       if(getDirection() == 4){
+       setDirection(3);
+       }
+       
+       //sirve para saber si choca con el techo y tiene direccion 1 se cambie a 3
+       if(getDirection() == 1){
+       setDirection(3);
+       }
+       //sirve para saber si choca con el techi y tiene direccion 2 se cambie a 4
+       if (getDirection() == 2){
+            setDirection(4);
+       }       
+       if (getDirection() == 3){
+       setDirection(4);
+       } 
+       
+    }
+    public boolean intersecta(Brick obj){
+     return obj instanceof Brick  && getPerimetro().intersects(((Brick) obj).getPerimetro());
+     }
            
         public Rectangle getPerimetro() {
          return new Rectangle(getX(), getY(), getWidth(), getHeight());

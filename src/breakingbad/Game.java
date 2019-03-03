@@ -75,11 +75,11 @@ private KeyManager keyManager; //to manage the keyboard
             ball = new Ball(iPosX, 250, 1, 40, 40, this);
         }
 
-
-            for (int i = 1; i <= 5; i++) {
-                 bricks.add(new Brick(getWidth() - 160*i , 50, 150, 100, this));
+        for(int j = 1; j <= 3; j++) {
+            for (int i = 1; i <= 7; i++) {
+                 bricks.add(new Brick(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this));
             }
-
+        }
         display.getJframe().addKeyListener(keyManager);
     }
 
@@ -141,9 +141,9 @@ private KeyManager keyManager; //to manage the keyboard
         for (int i = 0; i < bricks.size(); i++) {
           Brick ladrillo =  bricks.get(i);
           ladrillo.tick();
-          if(ball.intersecta(ladrillo)){
+          if(ladrillo.intersecta(ball)){
             ladrillo.nextBrick();
-            ball.setDirection(4);
+            ball.oppositeDirection();
             
         }
         }
