@@ -12,7 +12,7 @@ import java.util.Stack;
 
 /**
  *
- * @author antoniomejorado
+ * @author gerardogarzafox
  */
 public class Brick extends Item{
 
@@ -29,7 +29,6 @@ public class Brick extends Item{
         this.height = height;
         this.game = game;
         this.index = 0;
-        
         this.Meth = new Animation(Assets.BrickImages, 100);
     }
 
@@ -38,12 +37,6 @@ public class Brick extends Item{
      * @return 
      */
 
-    public Animation getMeth(){
-        return Meth;
-    }
-
-
-
     public int getWidth() {
         return width;
     }
@@ -51,8 +44,6 @@ public class Brick extends Item{
     public int getHeight() {
         return height;
     }
-
-
 
     public void setWidth(int width) {
         this.width = width;
@@ -65,12 +56,6 @@ public class Brick extends Item{
     @Override
     public void tick() {
         this.Meth.tick();
-
-        if (getX() <= -30) {
-            setX(-30);
-        }
-
-
     }
     
     public void setIndex(int index){
@@ -79,40 +64,32 @@ public class Brick extends Item{
     
     public int getIndex(){
         return index;
-    }
-    public int upgradeIndex(){ 
-        setIndex(getIndex()+1);
-        return getIndex();
-    }
-
-public void nextBrick(){
-       upgradeIndex();
-       if(getIndex()>=4){
+    }  
+    /**
+     * esta funcion va a llamar a la clase animation para avanzar al 
+     * siguiente tipo de bloque 
+     */
+    public void nextBrick(){
+       setIndex(getIndex()+1);
+       if(getIndex()>= 4){
            setY(-1000);
        }
-       
+       //actualiza nuestra animacion de bloque
        Meth.setStaticIndex(index);
-       Meth.getBlockFrame();
 
     }
 
-
     public Rectangle getPerimetro() {
-
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
     
     public boolean intersecta(Ball obj){
         return obj instanceof Ball  && getPerimetro().intersects(((Ball) obj).getPerimetro());
      }
-    
-    
+       
     @Override
-    public void render(Graphics g) {
-        
+    public void render(Graphics g) { 
         g.drawImage(Meth.getBlockFrame(), getX(), getY(), getWidth(), getHeight(), null);   
-        
-
-    }//Meth.getCurrentFrame()
+    }
 }
 

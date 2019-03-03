@@ -15,9 +15,10 @@ public class Assets {
     
     public static BufferedImage background; // to store background image 
     public static BufferedImage player; // to store the player image
-    public static BufferedImage brick;
-    public static BufferedImage ball;
-    public static SoundClip song;
+    public static BufferedImage grow;
+    public static BufferedImage shrink;
+    public static BufferedImage lives;
+  //  public static SoundClip song;
     
     public static BufferedImage BallImages[]; 
     public static BufferedImage ballSprites; // to store the sprites 
@@ -29,9 +30,12 @@ public class Assets {
 public static void init() {
 background = ImageLoader.loadImage("/Images/desert.jpeg");
 player = ImageLoader.loadImage("/Images/van.png"); 
-brick = ImageLoader.loadImage("/Images/brick.png"); 
-ball = ImageLoader.loadImage("/Images/ball.png"); 
-song = new SoundClip("/sounds/Undertale.mp3");
+
+grow = ImageLoader.loadImage("/Images/GreenPower.png");
+shrink = ImageLoader.loadImage("/Images/RedPower.png"); 
+
+lives = ImageLoader.loadImage("/Images/Heisenberg.png"); 
+//song = new SoundClip("/sounds/Undertale.mp3");
 
 brickSprites = ImageLoader.loadImage("/Images/Meth.png");
 SpriteSheet spritesheet = new SpriteSheet(brickSprites);

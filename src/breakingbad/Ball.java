@@ -33,7 +33,6 @@ public class Ball extends Item{
         this.game = game;
         this.direction = 1;
         this.speed = 3;
-   
         this.skull = new Animation(Assets.BallImages, 100);
     }
 
@@ -129,6 +128,7 @@ public class Ball extends Item{
        else if (getY() <= 0 && getDirection() == 2){
        setDirection(4);
        }
+       
         
     }
     
@@ -155,9 +155,9 @@ public class Ball extends Item{
      return obj instanceof Brick  && getPerimetro().intersects(((Brick) obj).getPerimetro());
      }
            
-        public Rectangle getPerimetro() {
-         return new Rectangle(getX(), getY(), getWidth(), getHeight());
-        }
+    public Rectangle getPerimetro() {
+     return new Rectangle(getX(), getY(), getWidth(), getHeight());
+    }
             
     @Override
     public void render(Graphics g) {
