@@ -80,8 +80,8 @@ private int speed;
           
           
           //reset x if colision
-       if (getX() + 150 >= game.getWidth()){
-       setX(game.getWidth() - 150);
+       if (getX() + 120 >= game.getWidth()){
+       setX(game.getWidth() - 120);
        }   
       
       else if (getX() <= 0){
@@ -92,13 +92,19 @@ private int speed;
     
       
        public Rectangle getPerimetro() {
-         return new Rectangle(getX(), getY(), getWidth(), getHeight());
+         return new Rectangle(getX(), getY(), 60, getHeight());
+        }
+       
+       public Rectangle getPerimetro2() {
+         return new Rectangle(getX()+61, getY(), 60, getHeight());
         }
        
        public boolean intersecta(Ball obj){
             return obj instanceof Ball  && getPerimetro().intersects(((Ball) obj).getPerimetro());
             }
-       
+       public boolean intersecta2(Ball obj){
+        return obj instanceof Ball  && getPerimetro2().intersects(((Ball) obj).getPerimetro());
+            }
        
     //To paint the item
      @Override 

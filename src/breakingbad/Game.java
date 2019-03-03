@@ -5,6 +5,8 @@
  */
 package breakingbad;
 
+//Hola
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
@@ -29,11 +31,62 @@ private Player player; // to use a player
 
 private Ball ball; //To use the ball
 
-private LinkedList<Brick> brick;
+private LinkedList<Brick> bricks;
 
 private KeyManager keyManager; //to manage the keyboard
 
-    @Override
+public Game(String title, int width, int height) { 
+    this.title = title;
+    this.width = width;
+    this.height = height;
+    running = false; 
+    keyManager = new KeyManager();
+    //
+    bricks = new LinkedList<Brick>();
+}
+
+    private int getDirection() {
+        return direction;
+    }
+    private void setDirection(int i) {
+       this.direction=i;
+    }
+    public int getWidth(){
+    return width;
+    }
+    public int getHeight(){
+    return height;
+    }
+
+private void init() {
+display = new Display(title, getWidth(), getHeight());
+Assets.init(); 
+
+//Se pone la barra que es el jugador 
+player = new Player(350, getHeight()-75, 1, 150, 60, this);
+
+//Se crea esta variable que hace que la posicion en x de la pelota sea random
+    int iPosX;
+    int iNum = (int) (Math.random() * 5) + 10;
+    for (int i = 1; i<= iNum; i++){
+        iPosX = (int) (Math.random() * getWidth()-100);
+        //Se inicializa la pelota con random x,
+        //en la mitad de la pantalla para que le de tiempo al jugador de moverse             
+        ball = new Ball(iPosX, 100, 1, 40, 40, this);
+    }
+        int iPosY = getHeight() + 40;
+        for (int i = 1; i <= 4; i++) {
+             bricks.add(new Brick(getWidth() + 10*i , 50, 100, 100, this));
+        }
+    
+display.getJframe().addKeyListener(keyManager);
+}
+
+public KeyManager getKeyManager() {
+        return keyManager;
+    }
+
+   @Override
 public void run() {
     init();
     //Frames per second
@@ -49,7 +102,6 @@ public void run() {
     
  //To change body of generated methods, choose Tools | Templates.
    while (running) {
-       
        //Setting the time to the computer tine in nanosecs
        now = System.nanoTime();
        //acumulating to delta the difference between times in timetick
@@ -57,65 +109,35 @@ public void run() {
        //updating the last time
        lastTime = now;
        
-       
-      if (delta >=1){ 
-   tick();
-   render(); 
-   delta --;
-      }
+   if (delta >=1){ 
+    tick();
+    render(); 
+    delta --;
+   }
    }
    stop(); 
 }
 
-
-public Game(String title, int width, int height) { 
-    this.title = title;
-    this.width = width;
-    this.height = height;
-    running = false; 
-    keyManager = new KeyManager();
-    
-    //
-    brick = new LinkedList<Brick>();
-}
-
-public int getWidth(){
-return width;
-}
-
-public int getHeight(){
-return height;
-}
-
-private void init() {
-display = new Display(title, getWidth(), getHeight());
-Assets.init(); 
-
-//Se pone la barra que es el jugador 
-player = new Player(0, getHeight()-100, 1, 120, 100, this);
-
-ball = new Ball(100, 100, 1, 40, 40, this);
-
-
-display.getJframe().addKeyListener(keyManager);
-
-}
-
-public KeyManager getKeyManager() {
-        return keyManager;
-    }
-
-
 private void tick() {
     keyManager.tick();
-    //advancinf player with colition
+    //advancing player with colition
    player.tick();
    ball.tick();
-   if (player.intersecta(ball)){
-              
-             }
    
+   
+   if (player.intersecta(ball)){
+       ball.setDirection(2);
     }
+   
+      if (player.intersecta2(ball)){
+       ball.setDirection(1);
+    }
+      //hacemos ticks en los ladrillos
+    for (int i = 0; i < bricks.size(); i++) {
+      Brick bad =  bricks.get(i);
+      bad.tick();
+    }
+}
 
 private void render() {
 // get the buffer strategy from the display
@@ -133,7 +155,11 @@ else
 Graphics g = bs.getDrawGraphics();
 g.drawImage(Assets.background, 0, 0, width, height, null); 
 player.render(g);
-
+//dibujamos los ladrillos en la pantalla
+    for (int i = 0; i < bricks.size(); i++) {
+        Brick brickz =  bricks.get(i);
+        brickz.render(g);
+    }
 ball.render(g);
 bs.show();
 g.dispose();
@@ -161,6 +187,5 @@ catch (InterruptedException ie) {
 ie.printStackTrace(); 
    }
  } 
-}
+}}
 
-}
