@@ -17,24 +17,28 @@ public class Assets {
     public static BufferedImage player; // to store the player image
     public static BufferedImage brick;
     public static BufferedImage ball;
+    //public static SoundClip song;
     
     public static BufferedImage BrickImages[];     // pictures to go down
     public static BufferedImage sprites; // to store the sprites 
 /**
 * initializing the images of the game */
 public static void init() {
-background = ImageLoader.loadImage("/images/breaking_bad_logo.png");
-player = ImageLoader.loadImage("/images/van.png"); 
-brick = ImageLoader.loadImage("/images/brick.png"); 
-ball = ImageLoader.loadImage("/images/ball.png"); 
-
-sprites = ImageLoader.loadImage("/images/Meth.png");
+background = ImageLoader.loadImage("/Images/breaking_bad_logo.png");
+player = ImageLoader.loadImage("/Images/van.png"); 
+brick = ImageLoader.loadImage("/Images/brick.png"); 
+ball = ImageLoader.loadImage("/Images/ball.png"); 
+//song = new SoundClip("/sounds/Megalovania.wav");
+sprites = ImageLoader.loadImage("/Images/Meth.png");
 SpriteSheet spritesheet = new SpriteSheet(sprites);
 BrickImages = new BufferedImage[4];
 
-        for (int i = 0; i<4; i++){
-            BrickImages[i] = spritesheet.crop(i*64,20,64,64);
-        }
+        
+BrickImages[0] = spritesheet.crop(0,0,256,150);
+BrickImages[1] = spritesheet.crop(256,0,256,150);
+BrickImages[3] = spritesheet.crop(0,155,256,150);
+BrickImages[2] = spritesheet.crop(256,155,256,150);
+        
 }
     
 }

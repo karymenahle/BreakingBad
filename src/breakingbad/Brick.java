@@ -15,19 +15,19 @@ import java.awt.Rectangle;
  */
 public class Brick extends Item{
 
-    private int direction;
     private int width;
     private int height;
     private Game game;
-    
-    private Animation Meth;
+
+    private int index;
+    public Animation Meth;
     
     public Brick(int x, int y, int width, int height, Game game) {
         super(x, y);
         this.width = width;
         this.height = height;
         this.game = game;
-        this.direction = -1;
+        this.index = 0;
         
         this.Meth = new Animation(Assets.BrickImages, 100);
     }
@@ -36,12 +36,9 @@ public class Brick extends Item{
      * 
      * @return 
      */
-    public int getDirection() {
-        return direction;
-    }
 
-    public void setDirection(int direction) {
-        this.direction = direction;
+    public Animation getMeth(){
+        return Meth;
     }
 
 
@@ -67,7 +64,7 @@ public class Brick extends Item{
     @Override
     public void tick() {
         this.Meth.tick();
-        setX(getX() + this.getDirection());
+
         // reset x position and y position if colision
 //        if (getX() + 60 >= game.getWidth()) {
 //            setX(game.getWidth() - 60);
@@ -83,7 +80,24 @@ public class Brick extends Item{
             setY(-20);
         }
     }
+    
+    public void setIndex(int index){
+        this.index = index;
+    }
+    
+    public int getIndex(){
+        return index;
+    }
+    public int upgradeIndex(){ 
+        setIndex(getIndex()+1);
+        return getIndex();
+    }
 
+public void nextBrick(){
+       upgradeIndex();
+       Meth.setStaticIndex(index);
+       Meth.getBlockFrame();
+    }
     public Rectangle getPerimetro() {
 
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
@@ -91,7 +105,10 @@ public class Brick extends Item{
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(Meth.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);
-    }
+        
+        g.drawImage(Meth.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);   
+        
+
+    }//Meth.getCurrentFrame()
 }
 

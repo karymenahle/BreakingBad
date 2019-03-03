@@ -130,8 +130,11 @@ public class Ball extends Item{
        }
         
     }
-    
-            public Rectangle getPerimetro() {
+           public boolean intersecta(Brick obj){
+            return obj instanceof Brick  && getPerimetro().intersects(((Brick) obj).getPerimetro());
+            }
+           
+        public Rectangle getPerimetro() {
          return new Rectangle(getX(), getY(), getWidth(), getHeight());
         }
             

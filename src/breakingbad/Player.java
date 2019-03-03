@@ -79,14 +79,14 @@ private int speed;
           }
           
           
-          //reset x if colision
-       if (getX() + 120 >= game.getWidth()){
-       setX(game.getWidth() - 120);
-       }   
-      
-      else if (getX() <= 0){
-       setX(0); 
-        }
+            //reset x if colision
+         if (getX() + 120 >= game.getWidth()){
+         setX(game.getWidth() - 120);
+         }   
+
+        else if (getX() <= 0){
+         setX(0); 
+          }
           
       }
     
