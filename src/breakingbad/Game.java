@@ -41,7 +41,6 @@ private boolean pausa;//para poner el juego en pausa
 private int state; //para saber si el juego esta en 1=corriendo 2=game over 3= pausa
 private boolean empty;
 
-
     public Game(String title, int width, int height) { 
         this.title = title;
         this.width = width;
@@ -125,6 +124,14 @@ private boolean empty;
     public void setStart(boolean start) {
         this.start = start;
     }
+    
+    public boolean isPowerUp(){
+        return PowerUp;
+    }
+    public void changePowerUp(){
+        this.PowerUp = !this.PowerUp;
+    } 
+    
 
     private void init() { 
         display = new Display(title, getWidth(), getHeight());
@@ -180,7 +187,7 @@ private boolean empty;
                if (player.intersecta2(ball)){
                 ball.setDirection(1);
              }
-
+               
                //hacemos ticks en los ladrillos
              for (int i = 0; i < bricks.size(); i++) {
                Brick ladrillo =  bricks.get(i);
@@ -192,6 +199,12 @@ private boolean empty;
                  ball.oppositeDirection();
                  int iNum = (int) (Math.random() * 10);
                   if(ladrillo.getY() < 0 && iNum > 5){
+                      if(!isPowerUp()){
+                          erlenmeyer.changeColor();
+                          changePowerUp();
+                      }else{
+                          changePowerUp();
+                      }
                       erlenmeyer.setX(ladrillo.getX()+ladrillo.getWidth()/2 );
                       erlenmeyer.setY(ladrillo.getPreY() );
                       erlenmeyer.isDropping();

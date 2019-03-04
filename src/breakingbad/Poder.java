@@ -23,6 +23,7 @@ private int height;
 private Game game;
 private int speed;
 private boolean drop;
+private boolean color;
 
     public Poder(int x, int y, int width, int height, Game game) {
         super(x, y);        
@@ -31,6 +32,7 @@ private boolean drop;
         this.game = game;
         this.speed = 2;
         this.drop = false;
+        this.color = true;
     }
 
     public int getHeight() {
@@ -60,6 +62,10 @@ private boolean drop;
     public void isDropping(){
         this.drop = !this.drop;
     }
+    
+    public void changeColor(){
+        this.color = !this.color;
+    }
   
     @Override 
       public void tick(){
@@ -83,7 +89,12 @@ private boolean drop;
     //To paint the item
      @Override 
     public void render(Graphics g){
-        g.drawImage(Assets.grow, getX(), getY(), getWidth(), getHeight(), null);
+        if(color){
+           g.drawImage(Assets.grow, getX(), getY(), getWidth(), getHeight(), null); 
+        }else{
+           g.drawImage(Assets.shrink, getX(), getY(), getWidth(), getHeight(), null); 
+        }
+        
     
     }
 }
