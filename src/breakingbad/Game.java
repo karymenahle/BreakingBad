@@ -111,9 +111,10 @@ private boolean empty;
     }
 
     private void init() {
+        
         display = new Display(title, getWidth(), getHeight());
         Assets.init(); 
-
+        Assets.song.play();
         
         if(PowerUp){
             poder = new Poder(100,100,40,40,this);
@@ -234,6 +235,7 @@ private void render() {
     
     	    if (state == 3) {
 		g.drawImage(Assets.pause, width / 2 - 98, height / 2 - 27, 196, 54, null);
+                Assets.song.play();
 	    }
 	    
 		if (bricks.isEmpty()) {

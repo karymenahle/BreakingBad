@@ -21,7 +21,7 @@ public class Assets {
     public static BufferedImage pause;
     public static BufferedImage gameover;
     public static BufferedImage win;
-  //  public static SoundClip song;
+    public static SoundClip song;
     
     public static BufferedImage BallImages[]; 
     public static BufferedImage ballSprites; // to store the sprites 
@@ -41,7 +41,7 @@ grow = ImageLoader.loadImage("/Images/GreenPower.png");
 shrink = ImageLoader.loadImage("/Images/RedPower.png"); 
 
 lives = ImageLoader.loadImage("/Images/Heisenberg.png"); 
-//song = new SoundClip("/sounds/Undertale.mp3");
+song = new SoundClip("/sounds/Megalovania.wav", -3f,true);
 
 brickSprites = ImageLoader.loadImage("/Images/Meth.png");
 SpriteSheet spritesheet = new SpriteSheet(brickSprites);
@@ -59,6 +59,7 @@ BallImages = new BufferedImage[8];
 for (int i = 0; i < 8; i++){
     BallImages[i] = ballspritesheet.crop(0+40*i,0,32,32);
 }
+
 }
 
 }
