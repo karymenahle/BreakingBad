@@ -22,13 +22,15 @@ private int width;
 private int height;
 private Game game;
 private int speed;
+private boolean drop;
 
     public Poder(int x, int y, int width, int height, Game game) {
         super(x, y);        
         this.width = width;
         this.height = height;
         this.game = game;
-        this.speed = 5;
+        this.speed = 2;
+        this.drop = false;
     }
 
     public int getHeight() {
@@ -53,14 +55,19 @@ private int speed;
     }
 
     public void setSpeed(int speed) {
-        this.speed = 1;
+        this.speed = speed;
     }
-    
+    public void isDropping(){
+        this.drop = !this.drop;
+    }
   
     @Override 
       public void tick(){
         //Solo se mueve hacia abajo
-       setX(getX()-2);  
+       if(drop){
+          setY(getY()+getSpeed());  
+       }
+        
       }
     
       

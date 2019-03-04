@@ -26,10 +26,13 @@ private boolean running; // to set the game
 private int x; //to move image
 private int direction; // to set the direction of the player
 private Player player; // to use a player
-private Poder poder;//to use powers
+
 private Ball ball; //To use the ball
 private boolean start;//para hacer que el juego comience
+
+private LinkedList<Poder> poder;//to use powers
 private LinkedList<Brick> bricks;
+
 private KeyManager keyManager; //to manage the keyboard
 private boolean PowerUp;
 private int score; // puntaje
@@ -45,13 +48,14 @@ private boolean empty;
         this.height = height;
         running = false; 
         keyManager = new KeyManager();
-        bricks = new LinkedList<Brick>();  
+        bricks = new LinkedList<Brick>(); 
+        poder = new LinkedList<Poder>();
         this.PowerUp = false;
-        this.start=false;//inicializo el juego como false que todavia no inicia
+        this.start = false;//inicializo el juego como false que todavia no inicia
         score = 0;
-        num="Score:"+score;
-        this.pausa=false;// se inicializa la variable en falso por que no esta en pausa
-        this.state=0; //Se inicializa en 0 que significa que el juego todavia no empieza
+        num = "Score:"+score;
+        this.pausa = false;// se inicializa la variable en falso por que no esta en pausa
+        this.state = 0; //Se inicializa en 0 que significa que el juego todavia no empieza
         this.empty = false;
     }
 
@@ -109,36 +113,10 @@ private boolean empty;
     public void loseLife(){
         this.player.setLives(this.player.getLives()-1);
     }
-
-    private void init() {
-        
-        display = new Display(title, getWidth(), getHeight());
-        Assets.init(); 
-        Assets.song.play();
-        
-        if(PowerUp){
-            poder = new Poder(100,100,40,40,this);
-        }
-        //Se pone la barra que es el jugador 
-        player = new Player(320, getHeight()-100, 1, 150, 60, this);
-
-
-         //Se inicializa la pelota a mitad de la barra            
-         ball = new Ball(370, getHeight()-130, 1, 40, 40, this);
-        
-
-        for(int j = 1; j <= 3; j++) {
-            for (int i = 1; i <= 7; i++) {
-                 bricks.add(new Brick(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this));
-            }
-        }
-        display.getJframe().addKeyListener(keyManager);
-    }
-
+    
     public KeyManager getKeyManager() {
             return keyManager;
     }
-
 
     public boolean isStart() {
         return start;
@@ -148,13 +126,38 @@ private boolean empty;
         this.start = start;
     }
 
+    private void init() { 
+        display = new Display(title, getWidth(), getHeight());
+        Assets.init(); 
+        Assets.song.play();
+        
+        //Se pone la barra que es el jugador 
+        player = new Player(320, getHeight()-100, 1, 150, 60, this);
+
+         //Se inicializa la pelota a mitad de la barra            
+         ball = new Ball(370, getHeight()-130, 1, 40, 40, this);
+        
+         //despliega una matriz de bloques
+        for(int j = 1; j <= 3; j++) {
+            for (int i = 1; i <= 7; i++) {
+                 bricks.add(new Brick(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this)); 
+                 poder.add(new Poder(100*j+50*i,getHeight()*2,40,40,this));   
+            }
+            
+        }
+        
+        display.getJframe().addKeyListener(keyManager);
+    }
 
     private void tick() {
+        keyManager.tick();
         
+        //para empezar el juego necesita presionar space 
         if(getKeyManager().space){
         setStart(true);
         }
         
+        //logica para boton de pausa
         if (getKeyManager().pause && !isPausa()){
           state=(state == 1 ? 3:1);
         setPausa(true);
@@ -162,51 +165,58 @@ private boolean empty;
         else if (!getKeyManager().pause){
         setPausa(false);
         }
-        keyManager.tick();
         
-        if (state !=3){
-        //advancing player with colition
-       player.tick();
-       ball.tick();
-
-
-       if (player.intersecta(ball)){
-           ball.setDirection(2);
-           //Assets.song.play();
-        }
-
-          if (player.intersecta2(ball)){
-           ball.setDirection(1);
-        }
-          
-          
-          //hacemos ticks en los ladrillos
-        for (int i = 0; i < bricks.size(); i++) {
-          Brick ladrillo =  bricks.get(i);
-          ladrillo.tick();
-          if(ladrillo.intersecta(ball)){
-            ladrillo.nextBrick();
-            ball.oppositeDirection();
+        //logica para cuando no es pausa
+       if (state !=3){
+            //advancing player with colition
+            player.tick();
+            ball.tick();
             
-            setScore(getScore()+10);
-             //Se actualiza 
-             setNum("Score: "+getScore());
+
+            if (player.intersecta(ball)){
+                ball.setDirection(2);
              }
-        }
-          
-        
-        //cuando la pelota toca el suelo se pierde una vida y sale de la troca 
-        //mientras el jugador siga teniendo vidas
-        if(ball.getY() > getHeight() && player.getLives() >0 ){
-            loseLife();
-            setStart(false);
-            player.setX(320);
-            ball.setX(370);
-            ball.setY(player.getY()-40); 
-        }
-        else if (player.getLives()== 0){ 
-            state = 2;
-        }
+
+               if (player.intersecta2(ball)){
+                ball.setDirection(1);
+             }
+
+               //hacemos ticks en los ladrillos
+             for (int i = 0; i < bricks.size(); i++) {
+               Brick ladrillo =  bricks.get(i);
+               ladrillo.tick();
+               Poder erlenmeyer = poder.get(i);
+               erlenmeyer.tick();
+               if(ladrillo.intersecta(ball)){
+                 ladrillo.nextBrick();
+                 ball.oppositeDirection();
+                 int iNum = (int) (Math.random() * 10);
+                  if(ladrillo.getY() < 0 && iNum > 5){
+                      erlenmeyer.setX(ladrillo.getX()+ladrillo.getWidth()/2 );
+                      erlenmeyer.setY(ladrillo.getPreY() );
+                      erlenmeyer.isDropping();
+                      
+                 }
+                  
+                  //Se actualiza el score
+                  setScore(getScore()+10);
+                  setNum("Score: "+ getScore());
+                  }
+             }
+
+
+             //cuando la pelota toca el suelo se pierde una vida y sale de la troca 
+             //mientras el jugador siga teniendo vidas
+             if(ball.getY() > getHeight() && player.getLives() >0 ){
+                 loseLife();
+                 setStart(false);
+                 player.setX(320);
+                 ball.setX(370);
+                 ball.setY(player.getY()-40); 
+             }
+             else if (player.getLives()== 0){ 
+                 state = 2;
+             }
     }
     }
 
@@ -226,11 +236,16 @@ private void render() {
     //ponemos imagenes
     Graphics g = bs.getDrawGraphics();
     g.drawImage(Assets.background, 0, 0, width, height, null); 
-    player.render(g);
+    player.render(g);//dibujamos al jugador
+    
     //dibujamos los ladrillos en la pantalla
     for (int i = 0; i < bricks.size(); i++) {
         Brick brickz =  bricks.get(i);
         brickz.render(g);
+    }
+    for(int i = 0; i < poder.size();i++ ){
+        Poder GreenErlenmeyer =  poder.get(i);
+        GreenErlenmeyer.render(g);
     }
     
     	    if (state == 3) {
@@ -257,7 +272,6 @@ private void render() {
     }
 
 public synchronized void start() { 
-
     if (state == 0) {
         state = 1;
         thread = new Thread(this); 
