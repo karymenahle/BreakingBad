@@ -78,6 +78,7 @@ private int lives;
 
           //Si se presiona space empieza el juego
           if (game.isStart()){
+              //si se preciona la p se pone en pausa y no se mueve
               if (game.isPausa()==false){
         //Solo se mueve a la derecha o a la izquierda 
         

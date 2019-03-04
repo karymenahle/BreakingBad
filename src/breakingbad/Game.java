@@ -22,7 +22,7 @@ String title; // title of the window
 private int width;// width of the window
 private int height;// height of the window
 private Thread thread;
-private boolean running; // to set the game
+//private boolean running; // to set the game
 private int x; //to move image
 private int direction; // to set the direction of the player
 private Player player; // to use a player
@@ -35,15 +35,16 @@ private boolean PowerUp;
 private int score; // puntaje
 private String num; //despliega el puntaje
 private boolean pausa;//para poner el juego en pausa
-private int state; //para saber si el juego esta en 1=corriendo 2=game over 3= pausa
+private int state; //para saber si el juego esta en 1=corriendo 2=game over 3= pausa, 4=win
 private boolean empty;
+private int cont;
 
 
     public Game(String title, int width, int height) { 
         this.title = title;
         this.width = width;
         this.height = height;
-        running = false; 
+       // running = false; 
         keyManager = new KeyManager();
         bricks = new LinkedList<Brick>();  
         this.PowerUp = false;
@@ -52,7 +53,8 @@ private boolean empty;
         num="Score:"+score;
         this.pausa=false;// se inicializa la variable en falso por que no esta en pausa
         this.state=0; //Se inicializa en 0 que significa que el juego todavia no empieza
-        this.empty = false;
+        this.empty = false; // sirve para saber cuando ya no hay bricks gane el player
+        this.cont=0;
     }
 
     public boolean isEmpty() {
@@ -190,7 +192,10 @@ private boolean empty;
             setScore(getScore()+10);
              //Se actualiza 
              setNum("Score: "+getScore());
+
              }
+         
+          
         }
           
         
@@ -236,11 +241,11 @@ private void render() {
 		g.drawImage(Assets.pause, width / 2 - 98, height / 2 - 27, 196, 54, null);
 	    }
 	    
-		if (bricks.isEmpty()) {
-		    g.drawImage(Assets.win, width / 2 - 112, height / 2 - 32, 224, 64, null);
+		if (state == 4){
+		    g.drawImage(Assets.win, 150, 100, 500, 250, null);
 		} 
                 if (state == 2) { 
-		    g.drawImage(Assets.gameover, width / 2 - 112, height / 2 - 32, 224, 64, null);
+		    g.drawImage(Assets.gameover,50, 50, 700, 400, null);
 		
 	    }
             
