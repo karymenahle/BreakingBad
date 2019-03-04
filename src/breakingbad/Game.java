@@ -5,8 +5,6 @@
  */
 package breakingbad;
 
-//Hola
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
@@ -28,65 +26,244 @@ private boolean running; // to set the game
 private int x; //to move image
 private int direction; // to set the direction of the player
 private Player player; // to use a player
-
+private Poder poder;//to use powers
 private Ball ball; //To use the ball
-
+private boolean start;//para hacer que el juego comience
 private LinkedList<Brick> bricks;
-
 private KeyManager keyManager; //to manage the keyboard
+private boolean PowerUp;
+private int score; // puntaje
+private String num; //despliega el puntaje
+private boolean pausa;//para poner el juego en pausa
+private int state; //para saber si el juego esta en 1=corriendo 2=game over 3= pausa
+private boolean empty;
 
-public Game(String title, int width, int height) { 
-    this.title = title;
-    this.width = width;
-    this.height = height;
-    running = false; 
-    keyManager = new KeyManager();
-    //
-    bricks = new LinkedList<Brick>();
-}
 
+    public Game(String title, int width, int height) { 
+        this.title = title;
+        this.width = width;
+        this.height = height;
+        running = false; 
+        keyManager = new KeyManager();
+        bricks = new LinkedList<Brick>();  
+        this.PowerUp = false;
+        this.start=false;//inicializo el juego como false que todavia no inicia
+        score = 0;
+        num="Score:"+score;
+        this.pausa=false;// se inicializa la variable en falso por que no esta en pausa
+        this.state=0; //Se inicializa en 0 que significa que el juego todavia no empieza
+        this.empty = false;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    
+    public boolean isPausa() {
+        return pausa;
+    }
+
+    public void setPausa(boolean pausa) {
+        this.pausa = pausa;
+    }
+
+    
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    
     private int getDirection() {
         return direction;
     }
+    
     private void setDirection(int i) {
-       this.direction=i;
+       this.direction = i;
     }
+    
     public int getWidth(){
     return width;
     }
+    
     public int getHeight(){
     return height;
     }
-
-private void init() {
-display = new Display(title, getWidth(), getHeight());
-Assets.init(); 
-
-//Se pone la barra que es el jugador 
-player = new Player(350, getHeight()-75, 1, 150, 60, this);
-
-//Se crea esta variable que hace que la posicion en x de la pelota sea random
-    int iPosX;
-    int iNum = (int) (Math.random() * 5) + 10;
-    for (int i = 1; i<= iNum; i++){
-        iPosX = (int) (Math.random() * getWidth()-100);
-        //Se inicializa la pelota con random x,
-        //en la mitad de la pantalla para que le de tiempo al jugador de moverse             
-        ball = new Ball(iPosX, 100, 1, 40, 40, this);
-    }
-        int iPosY = getHeight() + 40;
-        for (int i = 1; i <= 4; i++) {
-             bricks.add(new Brick(getWidth() + 10*i , 50, 100, 100, this));
-        }
     
-display.getJframe().addKeyListener(keyManager);
+    public void loseLife(){
+        this.player.setLives(this.player.getLives()-1);
+    }
+
+    private void init() {
+        display = new Display(title, getWidth(), getHeight());
+        Assets.init(); 
+
+        
+        if(PowerUp){
+            poder = new Poder(100,100,40,40,this);
+        }
+        //Se pone la barra que es el jugador 
+        player = new Player(320, getHeight()-100, 1, 150, 60, this);
+
+
+         //Se inicializa la pelota a mitad de la barra            
+         ball = new Ball(370, getHeight()-130, 1, 40, 40, this);
+        
+
+        for(int j = 1; j <= 3; j++) {
+            for (int i = 1; i <= 7; i++) {
+                 bricks.add(new Brick(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this));
+            }
+        }
+        display.getJframe().addKeyListener(keyManager);
+    }
+
+    public KeyManager getKeyManager() {
+            return keyManager;
+    }
+
+
+    public boolean isStart() {
+        return start;
+    }
+
+    public void setStart(boolean start) {
+        this.start = start;
+    }
+
+
+    private void tick() {
+        
+        if(getKeyManager().space){
+        setStart(true);
+        }
+        
+        if (getKeyManager().pause && !isPausa()){
+          state=(state == 1 ? 3:1);
+        setPausa(true);
+        }
+        else if (!getKeyManager().pause){
+        setPausa(false);
+        }
+        keyManager.tick();
+        
+        if (state !=3){
+        //advancing player with colition
+       player.tick();
+       ball.tick();
+
+
+       if (player.intersecta(ball)){
+           ball.setDirection(2);
+           //Assets.song.play();
+        }
+
+          if (player.intersecta2(ball)){
+           ball.setDirection(1);
+        }
+          
+          
+          //hacemos ticks en los ladrillos
+        for (int i = 0; i < bricks.size(); i++) {
+          Brick ladrillo =  bricks.get(i);
+          ladrillo.tick();
+          if(ladrillo.intersecta(ball)){
+            ladrillo.nextBrick();
+            ball.oppositeDirection();
+            
+            setScore(getScore()+10);
+             //Se actualiza 
+             setNum("Score: "+getScore());
+             }
+        }
+          
+        
+        //cuando la pelota toca el suelo se pierde una vida y sale de la troca 
+        //mientras el jugador siga teniendo vidas
+        if(ball.getY() > getHeight() && player.getLives() >0 ){
+            loseLife();
+            setStart(false);
+            player.setX(320);
+            ball.setX(370);
+            ball.setY(player.getY()-40); 
+        }
+        else if (player.getLives()== 0){ 
+            state = 2;
+        }
+    }
+    }
+
+
+private void render() {
+    // get the buffer strategy from the display
+    bs = display.getCanvas().getBufferStrategy();
+    /* if it is null, we define one with 3 buffers to display images of the game, if not null, then we display every image of the game but after clearing the Rectanlge, getting the graphic object from the buffer strategy element.
+    show the graphic and dispose it to the trash system
+    */
+    if (bs == null) {
+        display.getCanvas().createBufferStrategy(3); 
+    }
+    else
+    {
+
+    //ponemos imagenes
+    Graphics g = bs.getDrawGraphics();
+    g.drawImage(Assets.background, 0, 0, width, height, null); 
+    player.render(g);
+    //dibujamos los ladrillos en la pantalla
+    for (int i = 0; i < bricks.size(); i++) {
+        Brick brickz =  bricks.get(i);
+        brickz.render(g);
+    }
+    
+    	    if (state == 3) {
+		g.drawImage(Assets.pause, width / 2 - 98, height / 2 - 27, 196, 54, null);
+	    }
+	    
+		if (bricks.isEmpty()) {
+		    g.drawImage(Assets.win, width / 2 - 112, height / 2 - 32, 224, 64, null);
+		} 
+                if (state == 2) { 
+		    g.drawImage(Assets.gameover, width / 2 - 112, height / 2 - 32, 224, 64, null);
+		
+	    }
+            
+    g.drawString(num, 700, 20);
+    ball.render(g);
+    bs.show();
+    g.dispose();
+
+    }
+
+
+    }
+
+public synchronized void start() { 
+
+    if (state == 0) {
+        state = 1;
+        thread = new Thread(this); 
+        thread.start();
+     }
 }
 
-public KeyManager getKeyManager() {
-        return keyManager;
-    }
-
-   @Override
+    @Override
 public void run() {
     init();
     //Frames per second
@@ -101,91 +278,45 @@ public void run() {
     long lastTime = System.nanoTime();
     
  //To change body of generated methods, choose Tools | Templates.
-   while (running) {
-       //Setting the time to the computer tine in nanosecs
-       now = System.nanoTime();
-       //acumulating to delta the difference between times in timetick
-       delta +=(now - lastTime) / timeTick;
-       //updating the last time
-       lastTime = now;
-       
-   if (delta >=1){ 
-    tick();
-    render(); 
-    delta --;
-   }
+  while (state != 2) {
+	    now = System.nanoTime();
+	    delta += (now - lastTime) / timeTick;
+	    lastTime = now;
+	    
+	    if (delta >= 1) {
+		tick();
+		render();
+		delta--;
+	    }
+	}
+	
+	// Game over loop
+	while (state == 2) {
+	    now = System.nanoTime();
+	    delta += (now - lastTime) / timeTick;
+	    lastTime = now;
+	    
+	    if (delta >= 1) {
+		render();
+		delta--;
+	    }
    }
    stop(); 
 }
 
-private void tick() {
-    keyManager.tick();
-    //advancing player with colition
-   player.tick();
-   ball.tick();
-   
-   
-   if (player.intersecta(ball)){
-       ball.setDirection(2);
-    }
-   
-      if (player.intersecta2(ball)){
-       ball.setDirection(1);
-    }
-      //hacemos ticks en los ladrillos
-    for (int i = 0; i < bricks.size(); i++) {
-      Brick bad =  bricks.get(i);
-      bad.tick();
-    }
-}
-
-private void render() {
-// get the buffer strategy from the display
-bs = display.getCanvas().getBufferStrategy();
-/* if it is null, we define one with 3 buffers to display images of the game, if not null, then we display every image of the game but after clearing the Rectanlge, getting the graphic object from the buffer strategy element.
-show the graphic and dispose it to the trash system
-*/
-if (bs == null) {
-display.getCanvas().createBufferStrategy(3); 
-}
-else
-{
-
-//ponemos imagenes
-Graphics g = bs.getDrawGraphics();
-g.drawImage(Assets.background, 0, 0, width, height, null); 
-player.render(g);
-//dibujamos los ladrillos en la pantalla
-    for (int i = 0; i < bricks.size(); i++) {
-        Brick brickz =  bricks.get(i);
-        brickz.render(g);
-    }
-ball.render(g);
-bs.show();
-g.dispose();
+    public synchronized void stop() { 
+       // if (running) {
+       //         running = false; 
+       state = 2;
+            try {
+                thread.join();
+            } 
+            catch (InterruptedException ie) {
+                ie.printStackTrace(); 
+               }
+         } 
+  //  }
 
 }
 
-
-}
-
-public synchronized void start() { 
-    if (!running) {
-running = true;
-thread = new Thread(this); 
-thread.start();
- }
-}
-
-public synchronized void stop() { 
-if (running) {
-running = false; 
-try {
-thread.join();
-} 
-catch (InterruptedException ie) {
-ie.printStackTrace(); 
-   }
- } 
-}}
 

@@ -8,18 +8,19 @@ package breakingbad;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.Stack;
 
 /**
  *
- * @author antoniomejorado
+ * @author gerardogarzafox
  */
 public class Brick extends Item{
 
-    private int direction;
     private int width;
     private int height;
     private Game game;
-    
+
+    private int index;
     private Animation Meth;
     
     public Brick(int x, int y, int width, int height, Game game) {
@@ -27,8 +28,7 @@ public class Brick extends Item{
         this.width = width;
         this.height = height;
         this.game = game;
-        this.direction = -1;
-        
+        this.index = 0;
         this.Meth = new Animation(Assets.BrickImages, 100);
     }
 
@@ -36,15 +36,6 @@ public class Brick extends Item{
      * 
      * @return 
      */
-    public int getDirection() {
-        return direction;
-    }
-
-    public void setDirection(int direction) {
-        this.direction = direction;
-    }
-
-
 
     public int getWidth() {
         return width;
@@ -53,8 +44,6 @@ public class Brick extends Item{
     public int getHeight() {
         return height;
     }
-
-
 
     public void setWidth(int width) {
         this.width = width;
@@ -67,31 +56,40 @@ public class Brick extends Item{
     @Override
     public void tick() {
         this.Meth.tick();
-        setX(getX() + this.getDirection());
-        // reset x position and y position if colision
-//        if (getX() + 60 >= game.getWidth()) {
-//            setX(game.getWidth() - 60);
-//        }
-//        else 
-        if (getX() <= -30) {
-            setX(-30);
-        }
-//        if (getY() + 80 >= game.getHeight()) {
-//            setY(game.getHeight() - 80);
-//        }
-        else if (getY() <= -20) {
-            setY(-20);
-        }
+    }
+    
+    public void setIndex(int index){
+        this.index = index;
+    }
+    
+    public int getIndex(){
+        return index;
+    }  
+    /**
+     * esta funcion va a llamar a la clase animation para avanzar al 
+     * siguiente tipo de bloque 
+     */
+    public void nextBrick(){
+       setIndex(getIndex()+1);
+       if(getIndex()>= 4){
+           setY(-1000);
+       }
+       //actualiza nuestra animacion de bloque
+       Meth.setStaticIndex(index);
+
     }
 
     public Rectangle getPerimetro() {
-
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
-
+    
+    public boolean intersecta(Ball obj){
+        return obj instanceof Ball  && getPerimetro().intersects(((Ball) obj).getPerimetro());
+     }
+       
     @Override
-    public void render(Graphics g) {
-        g.drawImage(Meth.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);
+    public void render(Graphics g) { 
+        g.drawImage(Meth.getBlockFrame(), getX(), getY(), getWidth(), getHeight(), null);   
     }
 }
 

@@ -3,9 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/home/gerardo/Documents/videojuegos/BreakingBad/src/breakingbad/Game.java</file>
             <file>file:/home/gerardo/Documents/videojuegos/BreakingBad/src/breakingbad/Brick.java</file>
             <file>file:/home/gerardo/Documents/videojuegos/BreakingBad/src/breakingbad/Animation.java</file>
+=======
+            <file>file:/C:/Users/Electel/Desktop/Ene-Mayo2019/Proyecto%20de%20videojuegos/BreakingBad_K/BreakingBad/src/breakingbad/Brick.java</file>
+            <file>file:/C:/Users/Electel/Desktop/Ene-Mayo2019/Proyecto%20de%20videojuegos/BreakingBad_K/BreakingBad/src/breakingbad/Player.java</file>
+            <file>file:/C:/Users/Electel/Desktop/Ene-Mayo2019/Proyecto%20de%20videojuegos/BreakingBad_K/BreakingBad/src/breakingbad/Game.java</file>
+            <file>file:/C:/Users/Electel/Desktop/Ene-Mayo2019/Proyecto%20de%20videojuegos/BreakingBad_K/BreakingBad/src/breakingbad/Assets.java</file>
+>>>>>>> 8d44d2588431aacc1ad4766687c5af502cea9970
         </group>
     </open-files>
 </project-private>

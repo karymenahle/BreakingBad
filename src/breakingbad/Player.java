@@ -21,7 +21,7 @@ private int width;
 private int height;
 private Game game;
 private int speed;
-
+private int lives;
 
     public Player(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
@@ -30,6 +30,7 @@ private int speed;
         this.height = height;
         this.game = game;
         this.speed = 5;
+        this.lives = 4;
     }
 
     public int getDirection() {
@@ -47,7 +48,11 @@ private int speed;
     public int getSpeed() {
         return speed;
     }
-
+    
+    public int getLives(){
+        return lives;
+    }
+    
     public void setDirection(int direction) {
         this.direction = direction;
     }
@@ -63,11 +68,17 @@ private int speed;
     public void setSpeed(int speed) {
         this.speed = 1;
     }
-
+    
+    public void setLives(int life){
+        this.lives = life;
+    }
   
     @Override 
       public void tick(){
 
+          //Si se presiona space empieza el juego
+          if (game.isStart()){
+              if (game.isPausa()==false){
         //Solo se mueve a la derecha o a la izquierda 
         
           if(game.getKeyManager().left){
@@ -78,7 +89,7 @@ private int speed;
           setX(getX() + getSpeed());
           }
           
-          
+         
           //reset x if colision
        if (getX() + 120 >= game.getWidth()){
        setX(game.getWidth() - 120);
@@ -87,16 +98,17 @@ private int speed;
       else if (getX() <= 0){
        setX(0); 
         }
-          
+          }
+          }
       }
     
       
        public Rectangle getPerimetro() {
-         return new Rectangle(getX(), getY(), 60, getHeight());
+         return new Rectangle(getX(), getY(), 75, getHeight());
         }
        
        public Rectangle getPerimetro2() {
-         return new Rectangle(getX()+61, getY(), 60, getHeight());
+         return new Rectangle(getX()+76, getY(), 75, getHeight());
         }
        
        public boolean intersecta(Ball obj){
@@ -109,7 +121,11 @@ private int speed;
     //To paint the item
      @Override 
     public void render(Graphics g){
-    g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
+        g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
+    
+        for(int i = 0; i < getLives();i++){
+            g.drawImage(Assets.lives, 15+35*i, game.getHeight()-40, 30, 30, null);
+        }
     }
 
 }
