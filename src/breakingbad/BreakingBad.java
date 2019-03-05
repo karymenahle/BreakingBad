@@ -20,7 +20,6 @@ public class BreakingBad {
         // creating a Game object
 Game g = new Game("Juego", 800, 500); // initializing the game
 g.start(); 
-
     }
     
 }

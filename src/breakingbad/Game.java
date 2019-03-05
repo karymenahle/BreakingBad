@@ -22,7 +22,6 @@ String title; // title of the window
 private int width;// width of the window
 private int height;// height of the window
 private Thread thread;
-private boolean running; // to set the game
 private int x; //to move image
 private int direction; // to set the direction of the player
 private Player player; // to use a player
@@ -38,15 +37,15 @@ private boolean PowerUp;
 private int score; // puntaje
 private String num; //despliega el puntaje
 private boolean pausa;//para poner el juego en pausa
-private int state; //para saber si el juego esta en 1=corriendo 2=game over 3= pausa
+private int state; //para saber si el juego esta en 1=corriendo 2=game over 3= pausa 4= win
 private boolean empty;
 private int TotalBricks;
 private int Win;
+
     public Game(String title, int width, int height) { 
         this.title = title;
         this.width = width;
         this.height = height;
-        running = false; 
         keyManager = new KeyManager();
         bricks = new LinkedList<Brick>(); 
         poder = new LinkedList<Poder>();
@@ -78,7 +77,6 @@ private int Win;
         this.pausa = pausa;
     }
 
-    
     public String getNum() {
         return num;
     }
@@ -94,7 +92,6 @@ private int Win;
     public void setScore(int score) {
         this.score = score;
     }
-
     
     private int getDirection() {
         return direction;
@@ -105,11 +102,11 @@ private int Win;
     }
     
     public int getWidth(){
-    return width;
+        return width;
     }
     
     public int getHeight(){
-    return height;
+        return height;
     }
     
     public void loseLife(){
@@ -149,6 +146,10 @@ private int Win;
     private void setWin(int i) {
        this.Win = i;
     }
+    
+    public int getState(){
+        return state;
+    }
     private void init() { 
         display = new Display(title, getWidth(), getHeight());
         Assets.init(); 
@@ -166,28 +167,28 @@ private int Win;
                  bricks.add(new Brick(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this)); 
                  poder.add(new Poder(100*j+50*i,getHeight()*2,40,40,this));   
                  setTotalBricks(getTotalBricks()+1);
-            }
-            
+            } 
         }
-        
         display.getJframe().addKeyListener(keyManager);
     }
 
     private void tick() {
         keyManager.tick();
-        
+        if(getKeyManager().again){
+
+        }
         //para empezar el juego necesita presionar space 
         if(getKeyManager().space){
-        setStart(true);
+            setStart(true);
         }
         
         //logica para boton de pausa
         if (getKeyManager().pause && !isPausa()){
-          state=(state == 1 ? 3:1);
-        setPausa(true);
+            state=(state == 1 ? 3:1);
+            setPausa(true);
         }
         else if (!getKeyManager().pause){
-        setPausa(false);
+            setPausa(false);
         }
         
         //logica para cuando no es pausa
@@ -212,27 +213,28 @@ private int Win;
                ladrillo.tick();
                Poder erlenmeyer = poder.get(i);
                erlenmeyer.tick();
-                           if(erlenmeyer.intersect(player)){
-                 player.changeImg();
-                 erlenmeyer.setY( 1000);
-             }
+                if(erlenmeyer.intersect(player)){
+                    player.setbGrow(true);
+                   
+                    erlenmeyer.setY( 1000);
+                }
                if(ladrillo.intersecta(ball)){
                  ladrillo.nextBrick();
                  ball.oppositeDirection();
                  int iNum = (int) (Math.random() * 10);
-                  if(ladrillo.getY() < 0 ){
+                 if(ladrillo.getY() < 0 ){
                       setWin(getWin()+1);
                       if(iNum > 5){
-                      if(!isPowerUp()){
-                          erlenmeyer.changeColor();
-                          changePowerUp();
-                      }else{
-                          changePowerUp();
-                      }
-                      erlenmeyer.setX(ladrillo.getX()+ladrillo.getWidth()/2 );
-                      erlenmeyer.setY(ladrillo.getPreY() );
-                      erlenmeyer.isDropping();
-                  }
+                            if(!isPowerUp()){
+                                erlenmeyer.changeColor();
+                                changePowerUp();
+                            }else{
+                                changePowerUp();
+                            }
+                            erlenmeyer.setX(ladrillo.getX()+ladrillo.getWidth()/2 );
+                            erlenmeyer.setY(ladrillo.getPreY() );
+                            erlenmeyer.isDropping();
+                        }
                  }
 
                   //Se actualiza el score
@@ -253,10 +255,32 @@ private int Win;
                  ball.setY(player.getY()-40); 
              }
              else if (player.getLives()== 0){ 
-                 state = 2;
+                 state = 5;
              }
              if(getTotalBricks()==getWin()){
                  state = 4;
+             }
+             if(getKeyManager().again){//s is pressed 
+                if(state == 4 || state == 5){
+                    state = 1;
+                    player.setbGrow(false);
+                    player.setX(320);
+                    player.setY(getHeight()-100);
+                    player.setLives(3);
+                    Assets.song.play();
+
+                    setStart(false);
+                    ball.setX(370);
+                    ball.setY(getHeight()-130);
+                   for(int j = 1; j <= 3; j++) {
+                       for (int i = 1; i <= 7; i++) {
+                            bricks.add(new Brick(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this)); 
+                            poder.add(new Poder(100*j+50*i,getHeight()*2,40,40,this));   
+                           setTotalBricks(getTotalBricks()+1);
+                       } 
+                   }
+                   render();
+                }
              }
     }
     }
@@ -274,43 +298,45 @@ private void render() {
     else
     {
 
-    //ponemos imagenes
-    Graphics g = bs.getDrawGraphics();
-    g.drawImage(Assets.background, 0, 0, width, height, null); 
-    player.render(g);//dibujamos al jugador
-    
-    //dibujamos los ladrillos en la pantalla
-    for (int i = 0; i < bricks.size(); i++) {
-        Brick brickz =  bricks.get(i);
-        brickz.render(g);
-    }
-    for(int i = 0; i < poder.size();i++ ){
-        Poder GreenErlenmeyer =  poder.get(i);
-        GreenErlenmeyer.render(g);
-    }
-    
-    	    if (state == 3) {
-		g.drawImage(Assets.pause, width / 2 - 98, height / 2 - 27, 196, 54, null);
-                Assets.song.play();
-	    }
-	    
-		if (state == 4) {
-		    g.drawImage(Assets.win, width / 2 - 112, height / 2 - 32, 224, 64, null);
-		} 
-                if (state == 2) { 
-		    g.drawImage(Assets.gameover, width / 2 - 112, height / 2 - 32, 224, 64, null);
-		
-	    }
+        //ponemos imagenes
+        Graphics g = bs.getDrawGraphics();
+        g.drawImage(Assets.background, 0, 0, width, height, null); 
+        player.render(g);//dibujamos al jugador
+
+        //dibujamos los ladrillos en la pantalla
+        for (int i = 0; i < bricks.size(); i++) {
+            Brick brickz =  bricks.get(i);
+            brickz.render(g);
+        }
+        //dibujamos los poderes
+        for(int i = 0; i < poder.size();i++ ){
+            Poder GreenErlenmeyer =  poder.get(i);
+            GreenErlenmeyer.render(g);
+        }
+
+        if (state == 3) {
+            g.drawImage(Assets.pause, width / 2 - 98, height / 2 - 27, 196, 54, null);
+            Assets.song.play();
+        }
+
+        if (state == 4 ) {
+            g.drawImage(Assets.win, width / 2 - 112, height / 2 - 32, 224, 64, null);
+        } 
+
+        if (state == 5 ) { 
+            //while(!getKeyManager().again){
+               g.drawImage(Assets.gameover, width / 2 - 112, height / 2 - 32, 224, 64, null); 
+           // }
             
-    g.drawString(num, 700, 20);
-    ball.render(g);
-    bs.show();
-    g.dispose();
+        }
+
+        g.drawString(num, 700, 20);
+        ball.render(g);
+        bs.show();
+        g.dispose();
 
     }
-
-
-    }
+}
 
 public synchronized void start() { 
     if (state == 0) {
@@ -335,7 +361,7 @@ public void run() {
     long lastTime = System.nanoTime();
     
  //To change body of generated methods, choose Tools | Templates.
-  while (state != 2) {
+  while (state != 2 ) {
 	    now = System.nanoTime();
 	    delta += (now - lastTime) / timeTick;
 	    lastTime = now;
@@ -348,7 +374,7 @@ public void run() {
 	}
 	
 	// Game over loop
-	while (state == 2) {
+	while (state == 2 ) {
 	    now = System.nanoTime();
 	    delta += (now - lastTime) / timeTick;
 	    lastTime = now;
@@ -357,7 +383,7 @@ public void run() {
 		render();
 		delta--;
 	    }
-   }
+        }
    stop(); 
 }
 
@@ -372,7 +398,6 @@ public void run() {
                 ie.printStackTrace(); 
                }
          } 
-  //  }
 
 }
 

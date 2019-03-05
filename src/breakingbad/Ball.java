@@ -32,7 +32,7 @@ public class Ball extends Item{
         this.height = height;
         this.game = game;
         this.direction = 1;
-        this.speed = 3;
+        this.speed = 4;
         this.skull = new Animation(Assets.BallImages, 100);
     }
 

@@ -31,7 +31,7 @@ private boolean bGrow;
         this.height = height;
         this.game = game;
         this.speed = 5;
-        this.lives = 4;
+        this.lives = 3;
         this.bGrow = false;
     }
 
@@ -77,8 +77,8 @@ private boolean bGrow;
     public boolean isbGrow(){
        return bGrow;
     }
-    public void changeImg(){
-        bGrow = true;
+    public void setbGrow(boolean b){
+        bGrow = b;
     }
     
     @Override 
@@ -110,6 +110,8 @@ private boolean bGrow;
        //change size if collision with powerup
        if(isbGrow()){
            setWidth(200);
+       }else{
+           setWidth(150);
        }
           }
           }
@@ -117,11 +119,11 @@ private boolean bGrow;
     
       
        public Rectangle getPerimetro() {
-         return new Rectangle(getX(), getY(), 75, getHeight());
+         return new Rectangle(getX(), getY(), getWidth()/2, getHeight());
         }
        
        public Rectangle getPerimetro2() {
-         return new Rectangle(getX()+76, getY(), 75, getHeight());
+         return new Rectangle(getX()+getWidth()/2, getY(), getWidth()/2, getHeight());
         }
        
        public boolean intersecta(Ball obj){
