@@ -40,7 +40,8 @@ private String num; //despliega el puntaje
 private boolean pausa;//para poner el juego en pausa
 private int state; //para saber si el juego esta en 1=corriendo 2=game over 3= pausa
 private boolean empty;
-
+private int TotalBricks;
+private int Win;
     public Game(String title, int width, int height) { 
         this.title = title;
         this.width = width;
@@ -56,6 +57,8 @@ private boolean empty;
         this.pausa = false;// se inicializa la variable en falso por que no esta en pausa
         this.state = 0; //Se inicializa en 0 que significa que el juego todavia no empieza
         this.empty = false;
+        this.Win = 0;
+        this.TotalBricks = 0;
     }
 
     public boolean isEmpty() {
@@ -132,7 +135,20 @@ private boolean empty;
         this.PowerUp = !this.PowerUp;
     } 
     
-
+    private int getTotalBricks() {
+        return TotalBricks;
+    }
+    
+    private void setTotalBricks(int i) {
+       this.TotalBricks = i;
+    }
+    private int getWin() {
+        return Win;
+    }
+    
+    private void setWin(int i) {
+       this.Win = i;
+    }
     private void init() { 
         display = new Display(title, getWidth(), getHeight());
         Assets.init(); 
@@ -149,6 +165,7 @@ private boolean empty;
             for (int i = 1; i <= 7; i++) {
                  bricks.add(new Brick(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this)); 
                  poder.add(new Poder(100*j+50*i,getHeight()*2,40,40,this));   
+                 setTotalBricks(getTotalBricks()+1);
             }
             
         }
@@ -203,7 +220,9 @@ private boolean empty;
                  ladrillo.nextBrick();
                  ball.oppositeDirection();
                  int iNum = (int) (Math.random() * 10);
-                  if(ladrillo.getY() < 0 && iNum > 5){
+                  if(ladrillo.getY() < 0 ){
+                      setWin(getWin()+1);
+                      if(iNum > 5){
                       if(!isPowerUp()){
                           erlenmeyer.changeColor();
                           changePowerUp();
@@ -213,7 +232,7 @@ private boolean empty;
                       erlenmeyer.setX(ladrillo.getX()+ladrillo.getWidth()/2 );
                       erlenmeyer.setY(ladrillo.getPreY() );
                       erlenmeyer.isDropping();
-
+                  }
                  }
 
                   //Se actualiza el score
@@ -235,6 +254,9 @@ private boolean empty;
              }
              else if (player.getLives()== 0){ 
                  state = 2;
+             }
+             if(getTotalBricks()==getWin()){
+                 state = 4;
              }
     }
     }
@@ -272,7 +294,7 @@ private void render() {
                 Assets.song.play();
 	    }
 	    
-		if (bricks.isEmpty()) {
+		if (state == 4) {
 		    g.drawImage(Assets.win, width / 2 - 112, height / 2 - 32, 224, 64, null);
 		} 
                 if (state == 2) { 
