@@ -75,5 +75,8 @@ public class SoundClip {
 	// Loop when specified
 	clip.loop((loop) ? Clip.LOOP_CONTINUOUSLY : 0);
     }
+    public void stop(){
+        clip.stop();
+    }
 }
 

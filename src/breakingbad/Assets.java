@@ -36,7 +36,7 @@ background = ImageLoader.loadImage("/Images/desert.jpeg");
 player = ImageLoader.loadImage("/Images/van.png"); 
 playerGrow = ImageLoader.loadImage("/Images/MegaVan.png"); 
 pause = ImageLoader.loadImage("/Images/pause.png"); 
-gameover = ImageLoader.loadImage("/Images/gameover.jpg");
+gameover = ImageLoader.loadImage("/Images/GameO.jpg");
 win = ImageLoader.loadImage("/Images/win.png");
 
 grow = ImageLoader.loadImage("/Images/GreenPower.png");

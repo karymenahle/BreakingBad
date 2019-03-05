@@ -260,8 +260,9 @@ private int Win;
              if(getTotalBricks()==getWin()){
                  state = 4;
              }
+             //restart del juego
              if(getKeyManager().again){//s is pressed 
-                if(state == 4 || state == 5){
+                if(state == 4 || state == 5){//if win or game over
                     state = 1;
                     player.setbGrow(false);
                     player.setX(320);
@@ -270,6 +271,7 @@ private int Win;
                     Assets.song.play();
 
                     setStart(false);
+                    ball.changeVisibility(true);
                     ball.setX(370);
                     ball.setY(getHeight()-130);
                    for(int j = 1; j <= 3; j++) {
@@ -324,9 +326,12 @@ private void render() {
         } 
 
         if (state == 5 ) { 
-            //while(!getKeyManager().again){
-               g.drawImage(Assets.gameover, width / 2 - 112, height / 2 - 32, 224, 64, null); 
-           // }
+ 
+               g.drawImage(Assets.gameover, 0, 0, getWidth(), getHeight(), null); 
+               Assets.song.stop();
+               ball.changeVisibility(false);
+               setPausa(true);
+
             
         }
 

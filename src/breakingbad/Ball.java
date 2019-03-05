@@ -24,7 +24,7 @@ public class Ball extends Item{
     private int speed;
     private int direction;
     private Animation skull;
-
+    private boolean bVisible;
     
     public Ball(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
@@ -34,6 +34,13 @@ public class Ball extends Item{
         this.direction = 1;
         this.speed = 4;
         this.skull = new Animation(Assets.BallImages, 100);
+        this.bVisible = true;
+    }
+    public boolean isVisible(){
+        return bVisible;
+    }
+    public void changeVisibility(boolean b){
+        this.bVisible = b;
     }
 
     public int getSpeed() {
@@ -165,6 +172,9 @@ public class Ball extends Item{
             
     @Override
     public void render(Graphics g) {
-        g.drawImage(skull.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);
+        if(isVisible()){
+          g.drawImage(skull.getCurrentFrame(), getX(), getY(), getWidth(), getHeight(), null);  
+        }
+        
     }
 }
