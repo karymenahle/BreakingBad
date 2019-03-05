@@ -184,9 +184,10 @@ private boolean empty;
                 ball.setDirection(2);
              }
 
-               if (player.intersecta2(ball)){
+            if (player.intersecta2(ball)){
                 ball.setDirection(1);
              }
+
                
                //hacemos ticks en los ladrillos
              for (int i = 0; i < bricks.size(); i++) {
@@ -194,6 +195,10 @@ private boolean empty;
                ladrillo.tick();
                Poder erlenmeyer = poder.get(i);
                erlenmeyer.tick();
+                           if(erlenmeyer.intersect(player)){
+                 player.changeImg();
+                 erlenmeyer.setY( 1000);
+             }
                if(ladrillo.intersecta(ball)){
                  ladrillo.nextBrick();
                  ball.oppositeDirection();
@@ -208,13 +213,14 @@ private boolean empty;
                       erlenmeyer.setX(ladrillo.getX()+ladrillo.getWidth()/2 );
                       erlenmeyer.setY(ladrillo.getPreY() );
                       erlenmeyer.isDropping();
-                      
+
                  }
-                  
+
                   //Se actualiza el score
                   setScore(getScore()+10);
                   setNum("Score: "+ getScore());
                   }
+
              }
 
 

@@ -71,18 +71,18 @@ private boolean color;
       public void tick(){
         //Solo se mueve hacia abajo
        if(drop){
-          setY(getY()+getSpeed());  
+          setY(getY() + getSpeed());  
        }
         
       }
     
       
        public Rectangle getPerimetro() {
-         return new Rectangle(getX(), getY(), 60, getHeight());
+         return new Rectangle(getX(), getY(), getWidth(), getHeight());
         }
            
-       public boolean intersecta(Ball obj){
-            return obj instanceof Ball  && getPerimetro().intersects(((Ball) obj).getPerimetro());
+       public boolean intersect(Player obj){
+            return obj instanceof Player  && getPerimetro().intersects(((Player) obj).getPerimetro());
             }
 
        

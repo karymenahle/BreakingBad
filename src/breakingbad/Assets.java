@@ -15,6 +15,7 @@ public class Assets {
     
     public static BufferedImage background; // to store background image 
     public static BufferedImage player; // to store the player image
+    public static BufferedImage playerGrow; // to store the player image
     public static BufferedImage grow;
     public static BufferedImage shrink;
     public static BufferedImage lives;
@@ -33,6 +34,7 @@ public class Assets {
 public static void init() {
 background = ImageLoader.loadImage("/Images/desert.jpeg");
 player = ImageLoader.loadImage("/Images/van.png"); 
+playerGrow = ImageLoader.loadImage("/Images/MegaVan.png"); 
 pause = ImageLoader.loadImage("/Images/pause.png"); 
 gameover = ImageLoader.loadImage("/Images/gameover.jpg");
 win = ImageLoader.loadImage("/Images/win.png");
