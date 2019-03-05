@@ -22,7 +22,7 @@ String title; // title of the window
 private int width;// width of the window
 private int height;// height of the window
 private Thread thread;
-//private boolean running; // to set the game
+private boolean running; // to set the game
 private int x; //to move image
 private int direction; // to set the direction of the player
 private Player player; // to use a player
@@ -36,15 +36,14 @@ private int score; // puntaje
 private String num; //despliega el puntaje
 private boolean pausa;//para poner el juego en pausa
 private int state; //para saber si el juego esta en 1=corriendo 2=game over 3= pausa, 4=win
-private boolean empty;
-private int cont;
+private boolean replay; //to restart the game
 
 
     public Game(String title, int width, int height) { 
         this.title = title;
         this.width = width;
         this.height = height;
-       // running = false; 
+        running = false; 
         keyManager = new KeyManager();
         bricks = new LinkedList<Brick>();  
         this.PowerUp = false;
@@ -53,19 +52,17 @@ private int cont;
         num="Score:"+score;
         this.pausa=false;// se inicializa la variable en falso por que no esta en pausa
         this.state=0; //Se inicializa en 0 que significa que el juego todavia no empieza
-        this.empty = false; // sirve para saber cuando ya no hay bricks gane el player
-        this.cont=0;
+        this.replay=true; 
     }
 
-    public boolean isEmpty() {
-        return empty;
+    public boolean isReplay() {
+        return replay;
     }
 
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
+    public void setReplay(boolean replay) {
+        this.replay = replay;
     }
 
-    
     public boolean isPausa() {
         return pausa;
     }
@@ -73,7 +70,6 @@ private int cont;
     public void setPausa(boolean pausa) {
         this.pausa = pausa;
     }
-
     
     public String getNum() {
         return num;
@@ -91,7 +87,6 @@ private int cont;
         this.score = score;
     }
 
-    
     private int getDirection() {
         return direction;
     }
@@ -112,7 +107,22 @@ private int cont;
         this.player.setLives(this.player.getLives()-1);
     }
 
+    public boolean isStart() {
+        return start;
+    }
+
+    public void setStart(boolean start) {
+        this.start = start;
+    }
+     
+    public KeyManager getKeyManager() {
+            return keyManager;
+    }
+
+
     private void init() {
+
+            state = 1;
         display = new Display(title, getWidth(), getHeight());
         Assets.init(); 
 
@@ -134,21 +144,8 @@ private int cont;
             }
         }
         display.getJframe().addKeyListener(keyManager);
+      
     }
-
-    public KeyManager getKeyManager() {
-            return keyManager;
-    }
-
-
-    public boolean isStart() {
-        return start;
-    }
-
-    public void setStart(boolean start) {
-        this.start = start;
-    }
-
 
     private void tick() {
         
@@ -163,6 +160,7 @@ private int cont;
         else if (!getKeyManager().pause){
         setPausa(false);
         }
+        
         keyManager.tick();
         
         if (state !=3){
@@ -194,8 +192,6 @@ private int cont;
              setNum("Score: "+getScore());
 
              }
-         
-          
         }
           
         
@@ -304,14 +300,14 @@ public void run() {
 	    if (delta >= 1) {
 		render();
 		delta--;
+
 	    }
    }
    stop(); 
 }
 
     public synchronized void stop() { 
-       // if (running) {
-       //         running = false; 
+
        state = 2;
             try {
                 thread.join();
@@ -319,9 +315,9 @@ public void run() {
             catch (InterruptedException ie) {
                 ie.printStackTrace(); 
                }
-         } 
-  //  }
+          
 
+    }
 }
 
 
