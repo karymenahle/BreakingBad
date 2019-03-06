@@ -476,60 +476,6 @@ public void run() {
            }
     } 
     
-//    private void saveGame(){
-//        try{
-//            FileWriter fw = new FileWriter("save.txt");
-//            
-//            fw.write(String.valueOf(player.getX())+"/n");
-//            fw.write(String.valueOf(player.getY())+"/n");
-//            fw.write(String.valueOf(player.getLives())+"/n");
-//            fw.write(String.valueOf(player.isbGrow())+"/n");
-//            
-//            fw.write(String.valueOf(getScore())+"/n");
-//            fw.write(String.valueOf(ball.getX())+"/n");
-//            fw.write(String.valueOf(ball.getY())+"/n");
-//            fw.write(String.valueOf(ball.getDirection())+"/n");
-//            fw.write(String.valueOf(ball.getSpeed())+"/n");
-//            
-// //           for(int i = 0; i < bricks.size(); i++){
-// //                Brick ladrillo =  bricks.get(i);
-// //                if(ladrillo.isAlive()){
-// //                    fw.write("1/n");
-// //                }else{
-// //                    fw.write("0/n");
-// //                }
-// //           }
-// //           fw.write(String.valueOf(bricks.size())+"/n");
-//            fw.close();
-//        }catch(IOException ex){
-//            ex.printStackTrace();
-//        } 
-//    }
-//   private void loadGame(){
-//       try{
-//          BufferedReader br = new BufferedReader(new FileReader("save.txt"));  
-//          
-//          player.setX(Integer.parseInt(br.readLine()));
-//          player.setY(Integer.parseInt(br.readLine()));
-//          player.setLives(Integer.parseInt(br.readLine()));
-//          player.setbGrow(Boolean.parseBoolean(br.readLine()));
-//          setScore(Integer.parseInt(br.readLine()));
-//          
-//          ball.setX(Integer.parseInt(br.readLine()));
-//          ball.setY(Integer.parseInt(br.readLine()));
-//          ball.setDirection(Integer.parseInt(br.readLine()));
-//          ball.setSpeed(Integer.parseInt(br.readLine()));
-//          
-////          for(int i = 0; i < bricks.size(); i++){
-//              
-////          }
-//       br.close();
-//       }catch(IOException ex){
-//           ex.printStackTrace();
-//       }
-//      
-//   }
-   
    
    private void saveGame(){
     try{
@@ -540,13 +486,22 @@ public void run() {
     fw.write(String.valueOf(player.getLives())+ "\n");
     fw.write(String.valueOf(player.isbGrow())+ "\n");
     fw.write(String.valueOf(getScore())+ "\n");
-//    fw.write(String.valueOf(getNum())+ "\n");
+ //   fw.write(String.valueOf(getNum())+ "\n");
     fw.write(String.valueOf(ball.getX())+ "\n");
     fw.write(String.valueOf(ball.getY())+ "\n");
     fw.write(String.valueOf(ball.getDirection())+ "\n");
     fw.write(String.valueOf(ball.getSpeed())+ "\n");
 
 //Bricks
+// //           for(int i = 0; i < bricks.size(); i++){
+// //                Brick ladrillo =  bricks.get(i);
+// //                if(ladrillo.isAlive()){
+// //                    fw.write("1/n");
+// //                }else{
+// //                    fw.write("0/n");
+// //                }
+// //           }
+// //           fw.write(String.valueOf(bricks.size())+"/n");
 
     fw.close();
         }
@@ -565,7 +520,7 @@ public void run() {
         player.setLives(Integer.parseInt(br.readLine()));
         player.setbGrow(Boolean.parseBoolean(br.readLine()));
         setScore(Integer.parseInt(br.readLine()));
-   //     setNum(Integer.toString(br.readLine()));
+  //      setNum(Integer.parseInt(br.readLine()));
         
         ball.setX(Integer.parseInt(br.readLine()));
         ball.setY(Integer.parseInt(br.readLine()));
@@ -573,6 +528,9 @@ public void run() {
         ball.setSpeed(Integer.parseInt(br.readLine()));
         
         //Bricks
+ //      for(int i = 0; i < bricks.size(); i++){
+//              
+////          }
         
         br.close();
         }
