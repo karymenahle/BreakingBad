@@ -19,6 +19,8 @@ public class KeyManager implements KeyListener {
     public boolean space; //Para ver si esta oprimida la tecla space
     public boolean pause; //para poner el juego en pausa
     public boolean again; //Para quitar el juego de pausa
+    public boolean save; 
+    public boolean load;
     
     private boolean keys[]; //para guardar los movimientos
     
@@ -53,6 +55,8 @@ public class KeyManager implements KeyListener {
     space = keys[KeyEvent.VK_SPACE];
     pause=keys[KeyEvent.VK_P];
     again = keys[KeyEvent.VK_S];
+    save = keys[KeyEvent.VK_G];
+    load = keys[KeyEvent.VK_C];
     }
     
 }
