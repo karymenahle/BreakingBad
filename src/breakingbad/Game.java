@@ -187,6 +187,14 @@ private boolean again;
     }
 
     private void tick() {
+        if (getKeyManager().save){
+        saveGame();
+        }
+        
+        if (getKeyManager().load){
+        loadGame();
+        }
+        
         keyManager.tick();
         if(getKeyManager().restart){
 
@@ -384,7 +392,7 @@ public void run() {
     long lastTime = System.nanoTime();
     
  //To change body of generated methods, choose Tools | Templates.
-  while (state != 4 && state != 5 ) {
+  while (state != 2 ) {
 	    now = System.nanoTime();
 	    delta += (now - lastTime) / timeTick;
 	    lastTime = now;
@@ -397,7 +405,7 @@ public void run() {
 	}
 	
 	// Game over loop
-	while (state == 4 || state == 5 ) {
+	while (state == 2 ) {
 	    now = System.nanoTime();
 	    delta += (now - lastTime) / timeTick;
 	    lastTime = now;
@@ -434,6 +442,7 @@ public void run() {
     fw.write(String.valueOf(player.getLives())+ "\n");
     fw.write(String.valueOf(player.isbGrow())+ "\n");
     fw.write(String.valueOf(getScore())+ "\n");
+//    fw.write(String.valueOf(getNum())+ "\n");
     fw.write(String.valueOf(ball.getX())+ "\n");
     fw.write(String.valueOf(ball.getY())+ "\n");
     fw.write(String.valueOf(ball.getDirection())+ "\n");
@@ -458,6 +467,7 @@ public void run() {
         player.setLives(Integer.parseInt(br.readLine()));
         player.setbGrow(Boolean.parseBoolean(br.readLine()));
         setScore(Integer.parseInt(br.readLine()));
+   //     setNum(Integer.toString(br.readLine()));
         
         ball.setX(Integer.parseInt(br.readLine()));
         ball.setY(Integer.parseInt(br.readLine()));
