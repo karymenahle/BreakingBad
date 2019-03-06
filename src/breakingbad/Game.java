@@ -8,6 +8,10 @@ package breakingbad;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 
 /**
@@ -22,38 +26,51 @@ String title; // title of the window
 private int width;// width of the window
 private int height;// height of the window
 private Thread thread;
-private boolean running; // to set the game
 private int x; //to move image
 private int direction; // to set the direction of the player
 private Player player; // to use a player
-private Poder poder;//to use powers
+
 private Ball ball; //To use the ball
 private boolean start;//para hacer que el juego comience
+
+private LinkedList<Poder> poder;//to use powers
 private LinkedList<Brick> bricks;
+
 private KeyManager keyManager; //to manage the keyboard
 private boolean PowerUp;
 private int score; // puntaje
 private String num; //despliega el puntaje
 private boolean pausa;//para poner el juego en pausa
+
 private int state; //para saber si el juego esta en 1=corriendo 2=game over 3= pausa, 4=win
 private boolean replay; //to restart the game
 
+private int TotalBricks;
+private int Win;
+private boolean again;
 
     public Game(String title, int width, int height) { 
         this.title = title;
         this.width = width;
         this.height = height;
-        running = false; 
         keyManager = new KeyManager();
-        bricks = new LinkedList<Brick>();  
+        bricks = new LinkedList<Brick>(); 
+        poder = new LinkedList<Poder>();
         this.PowerUp = false;
-        this.start=false;//inicializo el juego como false que todavia no inicia
+        this.start = false;//inicializo el juego como false que todavia no inicia
         score = 0;
         num="Score:"+score;
         this.pausa=false;// se inicializa la variable en falso por que no esta en pausa
         this.state=0; //Se inicializa en 0 que significa que el juego todavia no empieza
         this.replay=true; 
+        num = "Score:"+score;
+        this.pausa = false;// se inicializa la variable en falso por que no esta en pausa
+        this.state = 0; //Se inicializa en 0 que significa que el juego todavia no empieza
+        this.Win = 0;
+        this.TotalBricks = 0;
+        this.again=false;
     }
+
 
     public boolean isReplay() {
         return replay;
@@ -70,7 +87,7 @@ private boolean replay; //to restart the game
     public void setPausa(boolean pausa) {
         this.pausa = pausa;
     }
-    
+
     public String getNum() {
         return num;
     }
@@ -96,15 +113,19 @@ private boolean replay; //to restart the game
     }
     
     public int getWidth(){
-    return width;
+        return width;
     }
     
     public int getHeight(){
-    return height;
+        return height;
     }
     
     public void loseLife(){
         this.player.setLives(this.player.getLives()-1);
+    }
+    
+    public KeyManager getKeyManager() {
+            return keyManager;
     }
 
     public boolean isStart() {
@@ -114,101 +135,174 @@ private boolean replay; //to restart the game
     public void setStart(boolean start) {
         this.start = start;
     }
-     
-    public KeyManager getKeyManager() {
-            return keyManager;
+
+    
+    public boolean isPowerUp(){
+        return PowerUp;
     }
-
-
-    private void init() {
-
-            state = 1;
+    public void changePowerUp(){
+        this.PowerUp = !this.PowerUp;
+    } 
+    
+    private int getTotalBricks() {
+        return TotalBricks;
+    }
+    
+    private void setTotalBricks(int i) {
+       this.TotalBricks = i;
+    }
+    private int getWin() {
+        return Win;
+    }
+    
+    private void setWin(int i) {
+       this.Win = i;
+    }
+    
+    public int getState(){
+        return state;
+    }
+    private void init() { 
+    //    state = 1;
         display = new Display(title, getWidth(), getHeight());
         Assets.init(); 
-
+        Assets.song.play();
         
-        if(PowerUp){
-            poder = new Poder(100,100,40,40,this);
-        }
         //Se pone la barra que es el jugador 
         player = new Player(320, getHeight()-100, 1, 150, 60, this);
-
 
          //Se inicializa la pelota a mitad de la barra            
          ball = new Ball(370, getHeight()-130, 1, 40, 40, this);
         
-
+         //despliega una matriz de bloques
         for(int j = 1; j <= 3; j++) {
             for (int i = 1; i <= 7; i++) {
-                 bricks.add(new Brick(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this));
-            }
+                 bricks.add(new Brick(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this)); 
+                 poder.add(new Poder(100*j+50*i,getHeight()*2,40,40,this));   
+                 setTotalBricks(getTotalBricks()+1);
+            } 
         }
         display.getJframe().addKeyListener(keyManager);
       
     }
 
     private void tick() {
-        
+        keyManager.tick();
+        if(getKeyManager().restart){
+
+        }
+        //para empezar el juego necesita presionar space 
         if(getKeyManager().space){
-        setStart(true);
+            setStart(true);
         }
         
+        //logica para boton de pausa
         if (getKeyManager().pause && !isPausa()){
-          state=(state == 1 ? 3:1);
-        setPausa(true);
+            state=(state == 1 ? 3:1);
+            setPausa(true);
         }
         else if (!getKeyManager().pause){
-        setPausa(false);
-        }
-        
-        keyManager.tick();
-        
-        if (state !=3){
-        //advancing player with colition
-       player.tick();
-       ball.tick();
-
-
-       if (player.intersecta(ball)){
-           ball.setDirection(2);
-           //Assets.song.play();
+            setPausa(false);
         }
 
-          if (player.intersecta2(ball)){
-           ball.setDirection(1);
-        }
-          
-          
-          //hacemos ticks en los ladrillos
-        for (int i = 0; i < bricks.size(); i++) {
-          Brick ladrillo =  bricks.get(i);
-          ladrillo.tick();
-          if(ladrillo.intersecta(ball)){
-            ladrillo.nextBrick();
-            ball.oppositeDirection();
+        //logica para cuando no es pausa
+       if (state !=3){
+            //advancing player with colition
+            player.tick();
+            ball.tick();
             
-            setScore(getScore()+10);
-             //Se actualiza 
-             setNum("Score: "+getScore());
 
+            if (player.intersecta(ball)){
+                ball.setDirection(2);
              }
-        }
-          
-        
-        //cuando la pelota toca el suelo se pierde una vida y sale de la troca 
-        //mientras el jugador siga teniendo vidas
-        if(ball.getY() > getHeight() && player.getLives() >0 ){
-            loseLife();
-            setStart(false);
-            player.setX(320);
-            ball.setX(370);
-            ball.setY(player.getY()-40); 
-        }
-        else if (player.getLives()== 0){ 
-            state = 2;
-        }
+
+            if (player.intersecta2(ball)){
+                ball.setDirection(1);
+             }
+
+               
+               //hacemos ticks en los ladrillos
+             for (int i = 0; i < bricks.size(); i++) {
+               Brick ladrillo =  bricks.get(i);
+               ladrillo.tick();
+               Poder erlenmeyer = poder.get(i);
+               erlenmeyer.tick();
+                if(erlenmeyer.intersect(player)){
+                    player.setbGrow(true);
+                   
+                    erlenmeyer.setY( 1000);
+                    
+                  setScore(getScore()+30);
+                  setNum("Score: "+ getScore());
+                  }
+                
+               if(ladrillo.intersecta(ball)){
+                 ladrillo.nextBrick();
+                 ball.oppositeDirection();
+                 int iNum = (int) (Math.random() * 10);
+                 if(ladrillo.getY() < 0 ){
+                      setWin(getWin()+1);
+                     
+                      if(iNum > 5){
+
+                            erlenmeyer.setX(ladrillo.getX()+ladrillo.getWidth()/2 );
+                            erlenmeyer.setY(ladrillo.getPreY() );
+                            erlenmeyer.isDropping();
+                        }
+                 }
+
+                  //Se actualiza el score
+                  setScore(getScore()+10);
+                  setNum("Score: "+ getScore());
+                  }
+
+
+             //cuando la pelota toca el suelo se pierde una vida y sale de la troca 
+             //mientras el jugador siga teniendo vidas
+             if(ball.getY() > getHeight() && player.getLives() >0 ){
+                 loseLife();
+                 setStart(false);
+                 player.setX(320);
+                 ball.setX(370);
+                 ball.setY(player.getY()-40); 
+             }
+             else if (player.getLives()== 0){ 
+                 state = 5;
+             }
+             if(getTotalBricks()==getWin()){
+                 state = 4;
+             }
+             //restart del juego
+             if(getKeyManager().restart){//s is pressed 
+                if(state == 4 || state == 5){//if win or game over
+                    state = 1;
+                    player.setbGrow(false);
+                    player.setX(320);
+                    player.setY(getHeight()-100);
+                    player.setLives(3);
+                    Assets.song.play();
+
+                    setStart(false);
+                    setScore(0);
+                    setNum("Score: "+ getScore());
+                    ball.changeVisibility(true);
+                    ball.setX(370);
+                    ball.setY(getHeight()-130);
+                   
+                    for(int j = 1; j <= 3; j++) {
+                       for (int k = 1; k <= 7; k++) {
+                            bricks.add(new Brick(getWidth()-60 - 100*k ,getHeight()-290- 60*j, 100, 50, this)); 
+                            poder.add(new Poder(100*j+50*k,getHeight()*2,40,40,this));   
+                           setTotalBricks(getTotalBricks()+1);
+                       } 
+                   }
+                   render();
+                }
+             }
     }
-    }
+       
+       }}
+    
 
 
 private void render() {
@@ -222,41 +316,52 @@ private void render() {
     }
     else
     {
-
-    //ponemos imagenes
-    Graphics g = bs.getDrawGraphics();
-    g.drawImage(Assets.background, 0, 0, width, height, null); 
-    player.render(g);
-    //dibujamos los ladrillos en la pantalla
-    for (int i = 0; i < bricks.size(); i++) {
-        Brick brickz =  bricks.get(i);
-        brickz.render(g);
-    }
     
-    	    if (state == 3) {
-		g.drawImage(Assets.pause, width / 2 - 98, height / 2 - 27, 196, 54, null);
-	    }
-	    
-		if (state == 4){
-		    g.drawImage(Assets.win, 150, 100, 500, 250, null);
-		} 
-                if (state == 2) { 
-		    g.drawImage(Assets.gameover,50, 50, 700, 400, null);
-		
-	    }
+        //ponemos imagenes
+        Graphics g = bs.getDrawGraphics();
+        g.drawImage(Assets.background, 0, 0, width, height, null); 
+        player.render(g);//dibujamos al jugador
+
+
+        //dibujamos los ladrillos en la pantalla
+        for (int i = 0; i < bricks.size(); i++) {
+            Brick brickz =  bricks.get(i);
+            brickz.render(g);
+        }
+        //dibujamos los poderes
+        for(int i = 0; i < poder.size();i++ ){
+            Poder GreenErlenmeyer =  poder.get(i);
+            GreenErlenmeyer.render(g);
+        }
+
+        if (state == 3) {
+            g.drawImage(Assets.pause, width / 2 - 98, height / 2 - 27, 196, 54, null);
+            Assets.song.play();
+        }
+
+        if (state == 4 ) {
+            g.drawImage(Assets.win, width / 2 - 112, height / 2 - 32, 224, 64, null);
+        } 
+
+        if (state == 5 ) { 
+ 
+               g.drawImage(Assets.gameover, 0, 0, getWidth(), getHeight(), null); 
+               Assets.song.stop();
+               ball.changeVisibility(false);
+               setPausa(true);
+
             
-    g.drawString(num, 700, 20);
-    ball.render(g);
-    bs.show();
-    g.dispose();
+        }
+
+        g.drawString(num, 700, 20);
+        ball.render(g);
+        bs.show();
+        g.dispose();
 
     }
-
-
-    }
+}
 
 public synchronized void start() { 
-
     if (state == 0) {
         state = 1;
         thread = new Thread(this); 
@@ -279,7 +384,7 @@ public void run() {
     long lastTime = System.nanoTime();
     
  //To change body of generated methods, choose Tools | Templates.
-  while (state != 2) {
+  while (state != 4 && state != 5 ) {
 	    now = System.nanoTime();
 	    delta += (now - lastTime) / timeTick;
 	    lastTime = now;
@@ -292,7 +397,7 @@ public void run() {
 	}
 	
 	// Game over loop
-	while (state == 2) {
+	while (state == 4 || state == 5 ) {
 	    now = System.nanoTime();
 	    delta += (now - lastTime) / timeTick;
 	    lastTime = now;
@@ -302,7 +407,7 @@ public void run() {
 		delta--;
 
 	    }
-   }
+        }
    stop(); 
 }
 
@@ -315,9 +420,61 @@ public void run() {
             catch (InterruptedException ie) {
                 ie.printStackTrace(); 
                }
-          
+            
 
+         } 
+    
+   
+    private void saveGame(){
+    try{
+    FileWriter fw = new FileWriter("save.txt");
+    
+    fw.write(String.valueOf(player.getX())+ "\n");   
+    fw.write(String.valueOf(player.getY())+ "\n");
+    fw.write(String.valueOf(player.getLives())+ "\n");
+    fw.write(String.valueOf(player.isbGrow())+ "\n");
+    fw.write(String.valueOf(getScore())+ "\n");
+    fw.write(String.valueOf(ball.getX())+ "\n");
+    fw.write(String.valueOf(ball.getY())+ "\n");
+    fw.write(String.valueOf(ball.getDirection())+ "\n");
+    fw.write(String.valueOf(ball.getSpeed())+ "\n");
+
+//Bricks
+
+    fw.close();
+        }
+    catch (IOException ex){
+        ex.printStackTrace();
     }
-}
+      }
+    
+    
+    private void loadGame(){
+        try{
+        BufferedReader br = new BufferedReader(new FileReader("save.txt"));
+        
+        player.setX(Integer.parseInt(br.readLine()));
+        player.setY(Integer.parseInt(br.readLine()));
+        player.setLives(Integer.parseInt(br.readLine()));
+        player.setbGrow(Boolean.parseBoolean(br.readLine()));
+        setScore(Integer.parseInt(br.readLine()));
+        
+        ball.setX(Integer.parseInt(br.readLine()));
+        ball.setY(Integer.parseInt(br.readLine()));
+        ball.setDirection(Integer.parseInt(br.readLine()));
+        ball.setSpeed(Integer.parseInt(br.readLine()));
+        
+        //Bricks
+        
+        br.close();
+        }
+        catch (IOException ex){
+            ex.printStackTrace();
+        }
+    }
+    }
+
+
+    
 
 

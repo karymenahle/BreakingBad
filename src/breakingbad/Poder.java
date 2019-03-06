@@ -22,13 +22,17 @@ private int width;
 private int height;
 private Game game;
 private int speed;
+private boolean drop;
+private boolean color;
 
     public Poder(int x, int y, int width, int height, Game game) {
         super(x, y);        
         this.width = width;
         this.height = height;
         this.game = game;
-        this.speed = 5;
+        this.speed = 2;
+        this.drop = false;
+        this.color = true;
     }
 
     public int getHeight() {
@@ -53,30 +57,44 @@ private int speed;
     }
 
     public void setSpeed(int speed) {
-        this.speed = 1;
+        this.speed = speed;
+    }
+    public void isDropping(){
+        this.drop = !this.drop;
     }
     
+    public void changeColor(){
+        this.color = !this.color;
+    }
   
     @Override 
       public void tick(){
         //Solo se mueve hacia abajo
-       setX(getX()-2);  
+       if(drop){
+          setY(getY() + getSpeed());  
+       }
+        
       }
     
       
        public Rectangle getPerimetro() {
-         return new Rectangle(getX(), getY(), 60, getHeight());
+         return new Rectangle(getX(), getY(), getWidth(), getHeight());
         }
            
-       public boolean intersecta(Ball obj){
-            return obj instanceof Ball  && getPerimetro().intersects(((Ball) obj).getPerimetro());
+       public boolean intersect(Player obj){
+            return obj instanceof Player  && getPerimetro().intersects(((Player) obj).getPerimetro());
             }
 
        
     //To paint the item
      @Override 
     public void render(Graphics g){
-        g.drawImage(Assets.grow, getX(), getY(), getWidth(), getHeight(), null);
+        if(color){
+           g.drawImage(Assets.grow, getX(), getY(), getWidth(), getHeight(), null); 
+        }else{
+           g.drawImage(Assets.shrink, getX(), getY(), getWidth(), getHeight(), null); 
+        }
+        
     
     }
 }

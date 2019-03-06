@@ -22,6 +22,7 @@ private int height;
 private Game game;
 private int speed;
 private int lives;
+private boolean bGrow;
 
     public Player(int x, int y, int direction, int width, int height, Game game) {
         super(x, y);
@@ -30,7 +31,8 @@ private int lives;
         this.height = height;
         this.game = game;
         this.speed = 5;
-        this.lives = 4;
+        this.lives = 3;
+        this.bGrow = false;
     }
 
     public int getDirection() {
@@ -72,14 +74,22 @@ private int lives;
     public void setLives(int life){
         this.lives = life;
     }
-  
+    public boolean isbGrow(){
+       return bGrow;
+    }
+    public void setbGrow(boolean b){
+        bGrow = b;
+    }
+    
     @Override 
       public void tick(){
 
           //Si se presiona space empieza el juego
           if (game.isStart()){
+
               //si se preciona la p se pone en pausa y no se mueve
               if (game.isPausa()==false){
+
         //Solo se mueve a la derecha o a la izquierda 
         
           if(game.getKeyManager().left){
@@ -92,24 +102,31 @@ private int lives;
           
          
           //reset x if colision
-       if (getX() + 120 >= game.getWidth()){
-       setX(game.getWidth() - 120);
+       if (getX() + getWidth() >= game.getWidth()){
+       setX(game.getWidth() - getWidth());
        }   
-      
+      //colision with left wall
       else if (getX() <= 0){
        setX(0); 
         }
+       
+       //change size if collision with powerup
+       if(isbGrow()){
+           setWidth(200);
+       }else{
+           setWidth(150);
+       }
           }
           }
       }
     
       
        public Rectangle getPerimetro() {
-         return new Rectangle(getX(), getY(), 75, getHeight());
+         return new Rectangle(getX(), getY(), getWidth()/2, getHeight());
         }
        
        public Rectangle getPerimetro2() {
-         return new Rectangle(getX()+76, getY(), 75, getHeight());
+         return new Rectangle(getX()+getWidth()/2, getY(), getWidth()/2, getHeight());
         }
        
        public boolean intersecta(Ball obj){
@@ -118,12 +135,19 @@ private int lives;
        public boolean intersecta2(Ball obj){
         return obj instanceof Ball  && getPerimetro2().intersects(((Ball) obj).getPerimetro());
             }
+
        
     //To paint the item
      @Override 
     public void render(Graphics g){
-        g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
-    
+        if(bGrow){
+            g.drawImage(Assets.playerGrow, getX(), getY(), getWidth(), getHeight(), null);
+        }else{
+            g.drawImage(Assets.player, getX(), getY(), getWidth(), getHeight(), null);
+         }
+        
+        
+        //draws player lives
         for(int i = 0; i < getLives();i++){
             g.drawImage(Assets.lives, 15+35*i, game.getHeight()-40, 30, 30, null);
         }

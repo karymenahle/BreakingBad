@@ -22,7 +22,7 @@ public class Brick extends Item{
 
     private int index;
     private Animation Meth;
-    
+    private int prevY;
     public Brick(int x, int y, int width, int height, Game game) {
         super(x, y);
         this.width = width;
@@ -30,6 +30,7 @@ public class Brick extends Item{
         this.game = game;
         this.index = 0;
         this.Meth = new Animation(Assets.BrickImages, 100);
+        this.prevY = y;
     }
 
     /**
@@ -61,7 +62,9 @@ public class Brick extends Item{
     public void setIndex(int index){
         this.index = index;
     }
-    
+    public int getPreY(){
+        return prevY;
+    }
     public int getIndex(){
         return index;
     }  
@@ -72,6 +75,7 @@ public class Brick extends Item{
     public void nextBrick(){
        setIndex(getIndex()+1);
        if(getIndex()>= 4){
+           
            setY(-1000);
        }
        //actualiza nuestra animacion de bloque
