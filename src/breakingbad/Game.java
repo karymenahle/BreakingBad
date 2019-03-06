@@ -217,8 +217,9 @@ private int Win;//to keep score of destroyed bricks
      */
     private void init() { 
         display = new Display(title, getWidth(), getHeight());
+        //we add our assets from our Assets class
         Assets.init(); 
-        Assets.song.play();
+        Assets.song.play();//we play Megalovania by toby fox
         //we add the player
         player = new Player(320, getHeight()-100, 1, 150, 60, this);
         //we add the ball on top of the player          
@@ -283,6 +284,7 @@ private int Win;//to keep score of destroyed bricks
                             erlenmeyer.setX(ladrillo.getX()+ladrillo.getWidth()/2 );
                             erlenmeyer.setY(ladrillo.getPreY() );
                             erlenmeyer.isDropping();
+                            ball.setSpeed(ball.getSpeed()+1);
                         }
                     }
                   //actualize score
@@ -293,9 +295,12 @@ private int Win;//to keep score of destroyed bricks
              }
 
 
-             //while the player still has lives the ball will reapear on top of him,when he loses the ball
+             //logic for when the player loses a live
              if(ball.getY() > getHeight() && player.getLives() >0 ){
                  loseLife();
+                 ball.setSpeed(ball.getSpeed()-1);
+                 setScore(getScore() - 50);
+                 setNum("Score: "+ getScore());
                  setStart(false);
                  player.setX(320);
                  ball.setX(370);
@@ -304,6 +309,7 @@ private int Win;//to keep score of destroyed bricks
              //sets our lose ocndition
              else if (player.getLives() == 0){ 
                  state = 5;
+                // bricks.clear();
              }
              //sets our win condition
              if(getTotalBricks() == getWin()){
@@ -313,6 +319,7 @@ private int Win;//to keep score of destroyed bricks
              if(getKeyManager().again){//s is pressed 
                 if(state == 4 || state == 5){//if win or game over
                     state = 1;
+                    setScore(0);
                     player.setbGrow(false);
                     player.setX(320);
                     player.setY(getHeight()-100);
@@ -322,6 +329,7 @@ private int Win;//to keep score of destroyed bricks
                     ball.changeVisibility(true);
                     ball.setX(370);
                     ball.setY(getHeight()-130);
+                    ball.setSpeed(4);
                    for(int j = 1; j <= 3; j++) {
                        for (int i = 1; i <= 7; i++) {
                             bricks.add(new Brick(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this)); 
