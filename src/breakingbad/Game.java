@@ -333,6 +333,7 @@ private int BricksAlive;
                 if(state == 4 || state == 5){//if win or game over
                     state = 1;
                     setScore(0);
+                    setNum("Score:"+score);
                     player.setbGrow(false);
                     player.setX(320);
                     player.setY(getHeight()-100);
