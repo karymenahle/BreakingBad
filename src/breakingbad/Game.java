@@ -27,7 +27,7 @@ private int direction; // to set the direction of the player
 private Player player; // to use a player
 
 private Ball ball; //To use the ball
-private boolean start;//para hacer que el juego comience
+private boolean start;//to start the game
 
 private LinkedList<Poder> poder;//to use powers
 private LinkedList<Brick> bricks;
@@ -35,13 +35,19 @@ private LinkedList<Brick> bricks;
 private KeyManager keyManager; //to manage the keyboard
 private boolean PowerUp;
 private int score; // puntaje
-private String num; //despliega el puntaje
-private boolean pausa;//para poner el juego en pausa
-private int state; //para saber si el juego esta en 1=corriendo 2=game over 3= pausa 4= win
+private String num; //to display score
+private boolean pausa;//to pause the game
+private int state; //to know if 1=running 2= endgame 3= pause 4= win 5=gameover
 private boolean empty;
-private int TotalBricks;
-private int Win;
+private int TotalBricks;//to keep track of total bricks
+private int Win;//to keep score of destroyed bricks
 
+    /**
+     *
+     * @param title
+     * @param width
+     * @param height
+     */
     public Game(String title, int width, int height) { 
         this.title = title;
         this.width = width;
@@ -50,7 +56,7 @@ private int Win;
         bricks = new LinkedList<Brick>(); 
         poder = new LinkedList<Poder>();
         this.PowerUp = false;
-        this.start = false;//inicializo el juego como false que todavia no inicia
+        this.start = false;//we initialize the game as false meaning it wont start
         score = 0;
         num = "Score:"+score;
         this.pausa = false;// se inicializa la variable en falso por que no esta en pausa
@@ -60,35 +66,66 @@ private int Win;
         this.TotalBricks = 0;
     }
 
+    /**
+     *<code> empty<code>isBoolean
+     * @return empty
+     */
     public boolean isEmpty() {
         return empty;
     }
 
+    /**
+     *<code> empty<code>changeBoolean
+     * @param empty
+     */
     public void setEmpty(boolean empty) {
         this.empty = empty;
     }
 
-    
+    /**
+     *
+     * @return pause
+     */
     public boolean isPausa() {
         return pausa;
     }
 
+    /**
+     *
+     * @param pausa
+     */
     public void setPausa(boolean pausa) {
         this.pausa = pausa;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getNum() {
         return num;
     }
 
+    /**
+     *
+     * @param num
+     */
     public void setNum(String num) {
         this.num = num;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getScore() {
         return score;
     }
 
+    /**
+     *
+     * @param score
+     */
     public void setScore(int score) {
         this.score = score;
     }
@@ -101,36 +138,57 @@ private int Win;
        this.direction = i;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getWidth(){
         return width;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getHeight(){
         return height;
     }
     
+    /**
+     *
+     */
     public void loseLife(){
         this.player.setLives(this.player.getLives()-1);
     }
     
+    /**
+     *
+     * @return
+     */
     public KeyManager getKeyManager() {
             return keyManager;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isStart() {
         return start;
     }
 
+    /**
+     *
+     * @param start
+     */
     public void setStart(boolean start) {
         this.start = start;
     }
     
-    public boolean isPowerUp(){
-        return PowerUp;
-    }
-    public void changePowerUp(){
-        this.PowerUp = !this.PowerUp;
-    } 
+    /**
+     *
+     * @return
+     */
     
     private int getTotalBricks() {
         return TotalBricks;
@@ -147,21 +205,25 @@ private int Win;
        this.Win = i;
     }
     
+    /**
+     *this returns the state of our game
+     * @return
+     */
     public int getState(){
         return state;
     }
+    /**
+     * here we initialize the game
+     */
     private void init() { 
         display = new Display(title, getWidth(), getHeight());
         Assets.init(); 
         Assets.song.play();
-        
-        //Se pone la barra que es el jugador 
+        //we add the player
         player = new Player(320, getHeight()-100, 1, 150, 60, this);
-
-         //Se inicializa la pelota a mitad de la barra            
-         ball = new Ball(370, getHeight()-130, 1, 40, 40, this);
-        
-         //despliega una matriz de bloques
+        //we add the ball on top of the player          
+        ball = new Ball(370, getHeight()-130, 1, 40, 40, this);
+        //we create a block matrix
         for(int j = 1; j <= 3; j++) {
             for (int i = 1; i <= 7; i++) {
                  bricks.add(new Brick(getWidth()-60 - 100*i ,getHeight()-290- 60*j, 100, 50, this)); 
@@ -175,14 +237,11 @@ private int Win;
     private void tick() {
         keyManager.tick();
         if(getKeyManager().again){
-
         }
-        //para empezar el juego necesita presionar space 
+        //starting the game with spacebar
         if(getKeyManager().space){
             setStart(true);
         }
-        
-        //logica para boton de pausa
         if (getKeyManager().pause && !isPausa()){
             state=(state == 1 ? 3:1);
             setPausa(true);
@@ -190,24 +249,18 @@ private int Win;
         else if (!getKeyManager().pause){
             setPausa(false);
         }
-        
-        //logica para cuando no es pausa
+        //pause logic
        if (state !=3){
             //advancing player with colition
             player.tick();
             ball.tick();
-            
-
             if (player.intersecta(ball)){
                 ball.setDirection(2);
              }
-
             if (player.intersecta2(ball)){
                 ball.setDirection(1);
-             }
-
-               
-               //hacemos ticks en los ladrillos
+             }              
+             //we actualize the bricks for rendering
              for (int i = 0; i < bricks.size(); i++) {
                Brick ladrillo =  bricks.get(i);
                ladrillo.tick();
@@ -215,38 +268,32 @@ private int Win;
                erlenmeyer.tick();
                 if(erlenmeyer.intersect(player)){
                     player.setbGrow(true);
-                   
-                    erlenmeyer.setY( 1000);
+                    erlenmeyer.setY(1000);
+                    setScore(getScore() + 30);
+                    setNum("Score: "+ getScore());
                 }
                if(ladrillo.intersecta(ball)){
-                 ladrillo.nextBrick();
-                 ball.oppositeDirection();
-                 int iNum = (int) (Math.random() * 10);
-                 if(ladrillo.getY() < 0 ){
+                  ladrillo.nextBrick();
+                  ball.oppositeDirection();
+                  int iNum = (int) (Math.random() * 10);
+                  if(ladrillo.getY() < 0 ){
                       setWin(getWin()+1);
                       if(iNum > 5){
-                            if(!isPowerUp()){
-                                erlenmeyer.changeColor();
-                                changePowerUp();
-                            }else{
-                                changePowerUp();
-                            }
+                            //we set the powerup in position and drop the power up
                             erlenmeyer.setX(ladrillo.getX()+ladrillo.getWidth()/2 );
                             erlenmeyer.setY(ladrillo.getPreY() );
                             erlenmeyer.isDropping();
                         }
-                 }
-
-                  //Se actualiza el score
-                  setScore(getScore()+10);
+                    }
+                  //actualize score
+                  setScore(getScore() + 10);
                   setNum("Score: "+ getScore());
-                  }
+                }
 
              }
 
 
-             //cuando la pelota toca el suelo se pierde una vida y sale de la troca 
-             //mientras el jugador siga teniendo vidas
+             //while the player still has lives the ball will reapear on top of him,when he loses the ball
              if(ball.getY() > getHeight() && player.getLives() >0 ){
                  loseLife();
                  setStart(false);
@@ -254,13 +301,15 @@ private int Win;
                  ball.setX(370);
                  ball.setY(player.getY()-40); 
              }
-             else if (player.getLives()== 0){ 
+             //sets our lose ocndition
+             else if (player.getLives() == 0){ 
                  state = 5;
              }
-             if(getTotalBricks()==getWin()){
+             //sets our win condition
+             if(getTotalBricks() == getWin()){
                  state = 4;
              }
-             //restart del juego
+             //restart the game
              if(getKeyManager().again){//s is pressed 
                 if(state == 4 || state == 5){//if win or game over
                     state = 1;
@@ -269,7 +318,6 @@ private int Win;
                     player.setY(getHeight()-100);
                     player.setLives(3);
                     Assets.song.play();
-
                     setStart(false);
                     ball.changeVisibility(true);
                     ball.setX(370);
@@ -287,7 +335,9 @@ private int Win;
     }
     }
 
-
+/**
+ * renders elements in canvas
+ */
 private void render() {
     // get the buffer strategy from the display
     bs = display.getCanvas().getBufferStrategy();
@@ -299,58 +349,60 @@ private void render() {
     }
     else
     {
-
-        //ponemos imagenes
+        //we add images
         Graphics g = bs.getDrawGraphics();
         g.drawImage(Assets.background, 0, 0, width, height, null); 
-        player.render(g);//dibujamos al jugador
+        player.render(g);//render the player
 
-        //dibujamos los ladrillos en la pantalla
+        //loopfor rendering all bricks
         for (int i = 0; i < bricks.size(); i++) {
             Brick brickz =  bricks.get(i);
             brickz.render(g);
         }
-        //dibujamos los poderes
+        //we render powerups
         for(int i = 0; i < poder.size();i++ ){
             Poder GreenErlenmeyer =  poder.get(i);
             GreenErlenmeyer.render(g);
         }
-
+        //pause case
         if (state == 3) {
             g.drawImage(Assets.pause, width / 2 - 98, height / 2 - 27, 196, 54, null);
             Assets.song.play();
         }
-
+        //win case
         if (state == 4 ) {
             g.drawImage(Assets.win, width / 2 - 112, height / 2 - 32, 224, 64, null);
         } 
-
+        //game over case
         if (state == 5 ) { 
- 
                g.drawImage(Assets.gameover, 0, 0, getWidth(), getHeight(), null); 
                Assets.song.stop();
                ball.changeVisibility(false);
-               setPausa(true);
-
-            
+               setPausa(true);     
         }
-
+        //graw score
         g.drawString(num, 700, 20);
+        //draw ball
         ball.render(g);
         bs.show();
         g.dispose();
-
     }
 }
 
-public synchronized void start() { 
-    if (state == 0) {
-        state = 1;
-        thread = new Thread(this); 
-        thread.start();
-     }
-}
+    /**
+     *for runing our game
+     */
+    public synchronized void start() { 
+        if (state == 0) {
+            state = 1;
+            thread = new Thread(this); 
+            thread.start();
+         }
+    }
 
+    /**
+     *In this function we manage time
+     */
     @Override
 public void run() {
     init();
@@ -363,8 +415,7 @@ public void run() {
     // define now to use inside the loop
     long now;
     //initializing last time to the computer time in nanosecs
-    long lastTime = System.nanoTime();
-    
+    long lastTime = System.nanoTime();  
  //To change body of generated methods, choose Tools | Templates.
   while (state != 2 ) {
 	    now = System.nanoTime();
@@ -376,8 +427,7 @@ public void run() {
 		render();
 		delta--;
 	    }
-	}
-	
+	}	
 	// Game over loop
 	while (state == 2 ) {
 	    now = System.nanoTime();
@@ -392,18 +442,16 @@ public void run() {
    stop(); 
 }
 
+    /**
+     *stops our game
+     */
     public synchronized void stop() { 
-       // if (running) {
-       //         running = false; 
        state = 2;
-            try {
-                thread.join();
-            } 
-            catch (InterruptedException ie) {
-                ie.printStackTrace(); 
-               }
-         } 
-
+        try {
+            thread.join();
+        } 
+        catch (InterruptedException ie) {
+            ie.printStackTrace(); 
+           }
+    } 
 }
-
-
