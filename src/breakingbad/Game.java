@@ -241,6 +241,15 @@ private int BricksAlive;
 
     private void tick() {
         keyManager.tick();
+        
+        if(getKeyManager().save){
+            saveGame();
+        }
+        
+        if(getKeyManager().load){
+            loadGame();
+        }
+        
         if(getKeyManager().again){
         }
         //starting the game with spacebar
@@ -474,21 +483,23 @@ public void run() {
             fw.write(String.valueOf(player.getX())+"/n");
             fw.write(String.valueOf(player.getY())+"/n");
             fw.write(String.valueOf(player.getLives())+"/n");
+            fw.write(String.valueOf(player.isbGrow())+"/n");
+            
             fw.write(String.valueOf(getScore())+"/n");
             fw.write(String.valueOf(ball.getX())+"/n");
             fw.write(String.valueOf(ball.getY())+"/n");
             fw.write(String.valueOf(ball.getDirection())+"/n");
             fw.write(String.valueOf(ball.getSpeed())+"/n");
             
-            for(int i = 0; i < bricks.size(); i++){
-                 Brick ladrillo =  bricks.get(i);
-                 if(ladrillo.isAlive()){
-                     fw.write("1/n");
-                 }else{
-                     fw.write("0/n");
-                 }
-            }
-            fw.write(String.valueOf(bricks.size())+"/n");
+ //           for(int i = 0; i < bricks.size(); i++){
+ //                Brick ladrillo =  bricks.get(i);
+ //                if(ladrillo.isAlive()){
+ //                    fw.write("1/n");
+ //                }else{
+ //                    fw.write("0/n");
+ //                }
+ //           }
+ //           fw.write(String.valueOf(bricks.size())+"/n");
             fw.close();
         }catch(IOException ex){
             ex.printStackTrace();
@@ -501,6 +512,7 @@ public void run() {
           player.setX(Integer.parseInt(br.readLine()));
           player.setY(Integer.parseInt(br.readLine()));
           player.setLives(Integer.parseInt(br.readLine()));
+          player.setbGrow(Boolean.parseBoolean(br.readLine()));
           setScore(Integer.parseInt(br.readLine()));
           
           ball.setX(Integer.parseInt(br.readLine()));
@@ -508,9 +520,10 @@ public void run() {
           ball.setDirection(Integer.parseInt(br.readLine()));
           ball.setSpeed(Integer.parseInt(br.readLine()));
           
-          for(int i = 0; i < bricks.size(); i++){
+//          for(int i = 0; i < bricks.size(); i++){
               
-          }
+//          }
+       br.close();
        }catch(IOException ex){
            ex.printStackTrace();
        }
