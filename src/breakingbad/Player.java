@@ -68,7 +68,7 @@ private boolean bGrow;
     }
 
     public void setSpeed(int speed) {
-        this.speed = 1;
+        this.speed = speed;
     }
     
     public void setLives(int life){

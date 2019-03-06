@@ -31,7 +31,7 @@ private boolean color;
         this.height = height;
         this.game = game;
         this.speed = 2;
-        this.drop = false;
+        this.drop = true;
         this.color = true;
     }
 
