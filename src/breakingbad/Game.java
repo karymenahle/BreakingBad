@@ -8,6 +8,10 @@ package breakingbad;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 
 /**
@@ -41,7 +45,7 @@ private int state; //to know if 1=running 2= endgame 3= pause 4= win 5=gameover
 private boolean empty;
 private int TotalBricks;//to keep track of total bricks
 private int Win;//to keep score of destroyed bricks
-
+private int BricksAlive;
     /**
      *
      * @param title
@@ -462,4 +466,54 @@ public void run() {
             ie.printStackTrace(); 
            }
     } 
+    
+    private void saveGame(){
+        try{
+            FileWriter fw = new FileWriter("save.txt");
+            
+            fw.write(String.valueOf(player.getX())+"/n");
+            fw.write(String.valueOf(player.getY())+"/n");
+            fw.write(String.valueOf(player.getLives())+"/n");
+            fw.write(String.valueOf(getScore())+"/n");
+            fw.write(String.valueOf(ball.getX())+"/n");
+            fw.write(String.valueOf(ball.getY())+"/n");
+            fw.write(String.valueOf(ball.getDirection())+"/n");
+            fw.write(String.valueOf(ball.getSpeed())+"/n");
+            
+            for(int i = 0; i < bricks.size(); i++){
+                 Brick ladrillo =  bricks.get(i);
+                 if(ladrillo.isAlive()){
+                     fw.write("1/n");
+                 }else{
+                     fw.write("0/n");
+                 }
+            }
+            fw.write(String.valueOf(bricks.size())+"/n");
+            fw.close();
+        }catch(IOException ex){
+            ex.printStackTrace();
+        } 
+    }
+   private void loadGame(){
+       try{
+          BufferedReader br = new BufferedReader(new FileReader("save.txt"));  
+          
+          player.setX(Integer.parseInt(br.readLine()));
+          player.setY(Integer.parseInt(br.readLine()));
+          player.setLives(Integer.parseInt(br.readLine()));
+          setScore(Integer.parseInt(br.readLine()));
+          
+          ball.setX(Integer.parseInt(br.readLine()));
+          ball.setY(Integer.parseInt(br.readLine()));
+          ball.setDirection(Integer.parseInt(br.readLine()));
+          ball.setSpeed(Integer.parseInt(br.readLine()));
+          
+          for(int i = 0; i < bricks.size(); i++){
+              
+          }
+       }catch(IOException ex){
+           ex.printStackTrace();
+       }
+      
+   }
 }

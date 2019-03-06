@@ -19,7 +19,7 @@ public class Brick extends Item{
     private int width;
     private int height;
     private Game game;
-
+    private boolean alive;
     private int index;
     private Animation Meth;
     private int prevY;
@@ -31,12 +31,17 @@ public class Brick extends Item{
         this.index = 0;
         this.Meth = new Animation(Assets.BrickImages, 100);
         this.prevY = y;
+        this.alive = true;
     }
 
     /**
      * 
      * @return 
      */
+    
+    public boolean isAlive(){
+        return alive;
+    }
 
     public int getWidth() {
         return width;
@@ -59,15 +64,16 @@ public class Brick extends Item{
         this.Meth.tick();
     }
     
-    public void setIndex(int index){
-        this.index = index;
-    }
+
     public int getPreY(){
         return prevY;
     }
     public int getIndex(){
         return index;
     }  
+    public void setIndex(int index){
+        this.index = index;
+    }
     /**
      * esta funcion va a llamar a la clase animation para avanzar al 
      * siguiente tipo de bloque 
@@ -77,6 +83,7 @@ public class Brick extends Item{
        if(getIndex()>= 4){
            
            setY(-1000);
+           alive = false;
        }
        //actualiza nuestra animacion de bloque
        Meth.setStaticIndex(index);
